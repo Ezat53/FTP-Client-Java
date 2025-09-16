@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Hesap Ekle - Xfer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>Yeni FTP Hesabı Ekle
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Hesap Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Örn: Sunucu 1" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="protocol" class="form-label">Protokol</label>
+                            <select class="form-select" id="protocol" name="protocol" required onchange="updatePort()">
+                                <option value="">Protokol Seçin</option>
+                                <option value="ftp">FTP</option>
+                                <option value="sftp">SFTP</option>
+                                <option value="scp">SCP</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="host" class="form-label">Host Adresi</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-server"></i>
+                                </span>
+                                <input type="text" class="form-control" id="host" name="host" placeholder="Örn: ftp.example.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="port" class="form-label">Port</label>
+                            <input type="number" class="form-control" id="port" name="port" value="21" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Kullanıcı Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Şifre</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <div class="form-text">Şifre opsiyoneldir (anahtar tabanlı kimlik doğrulama için)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Hesabı Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>Protokol Bilgileri
+                </h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-primary">FTP</h6>
+                        <small class="text-muted">Varsayılan Port: 21<br>Şifreli olmayan dosya transferi</small>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-success">SFTP</h6>
+                        <small class="text-muted">Varsayılan Port: 22<br>SSH üzerinden güvenli dosya transferi</small>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-info">SCP</h6>
+                        <small class="text-muted">Varsayılan Port: 22<br>SSH üzerinden güvenli kopyalama</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updatePort() {
+    const protocol = document.getElementById('protocol').value;
+    const portField = document.getElementById('port');
+    
+    switch(protocol) {
+        case 'ftp':
+            portField.value = '21';
+            break;
+        case 'sftp':
+        case 'scp':
+            portField.value = '22';
+            break;
+        default:
+            portField.value = '21';
+    }
+}
+</script>
+{% endblock %}

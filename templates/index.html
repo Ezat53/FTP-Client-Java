@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa - Xfer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <div class="gradient-bg text-white rounded-3 p-5 mb-4">
+                <h1 class="display-3 fw-bold mb-3">
+                    <i class="fas fa-cloud-upload-alt me-3"></i>
+                    Xfer
+                </h1>
+                <p class="lead mb-0">Modern, güvenli ve kullanıcı dostu web tabanlı dosya yönetim sistemi</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center p-5">
+                        <div class="gradient-bg rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="fas fa-sign-in-alt fa-2x text-white"></i>
+                        </div>
+                        <h4 class="card-title text-primary mb-3">Giriş Yap</h4>
+                        <p class="card-text text-muted mb-4">Mevcut hesabınızla sisteme giriş yapın ve dosyalarınızı yönetin</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card gradient-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-star me-2"></i>Sistem Özellikleri
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-server text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-primary mb-2">Çoklu Protokol Desteği</h6>
+                                        <p class="text-muted mb-0">FTP, SFTP ve SCP protokollerini destekleyerek esnek bağlantı seçenekleri sunar</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-shield-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-success mb-2">Güvenli Bağlantı</h6>
+                                        <p class="text-muted mb-0">Şifreli bağlantılar ve güvenli dosya transferi ile verilerinizi korur</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-users text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-info mb-2">Kullanıcı Yönetimi</h6>
+                                        <p class="text-muted mb-0">Admin ve kullanıcı rolleri ile detaylı yetkilendirme sistemi</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-mobile-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-warning mb-2">Responsive Tasarım</h6>
+                                        <p class="text-muted mb-0">Tüm cihazlarda mükemmel görünüm ve kullanım deneyimi</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-chart-line text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-danger mb-2">Aktivite Takibi</h6>
+                                        <p class="text-muted mb-0">Detaylı transfer logları ve sistem aktivite raporları</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="gradient-bg rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                        <i class="fas fa-palette text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-primary mb-2">Modern Arayüz</h6>
+                                        <p class="text-muted mb-0">Dark mode ve modern tasarım ile kullanıcı dostu deneyim</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
