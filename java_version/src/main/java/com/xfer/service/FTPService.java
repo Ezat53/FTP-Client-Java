@@ -182,9 +182,17 @@ public class FTPService {
     
     public boolean hasUserPermission(Long accountId, Long userId, String permission) {
         List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
-        return assignments.stream()
+        System.out.println("Checking permission for user " + userId + " on account " + accountId + " for permission: " + permission);
+        System.out.println("Found " + assignments.size() + " assignments for this account");
+        
+        boolean hasPermission = assignments.stream()
                 .filter(assignment -> assignment.getUserId().equals(userId))
                 .anyMatch(assignment -> {
+                    System.out.println("Checking assignment for user " + assignment.getUserId() + 
+                                     " - Read: " + assignment.getCanRead() + 
+                                     ", Write: " + assignment.getCanWrite() + 
+                                     ", Delete: " + assignment.getCanDelete() + 
+                                     ", Upload: " + assignment.getCanUpload());
                     switch (permission.toLowerCase()) {
                         case "read":
                             return assignment.getCanRead() != null && assignment.getCanRead();
@@ -198,6 +206,9 @@ public class FTPService {
                             return false;
                     }
                 });
+        
+        System.out.println("Permission check result: " + hasPermission);
+        return hasPermission;
     }
     
     // File Operations

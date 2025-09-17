@@ -174,11 +174,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Load existing assignments and permissions
             const assignments = /*[[${assignments}]]*/ [];
+            console.log("Loading assignments:", assignments);
             assignments.forEach(function(assignment) {
                 const userId = assignment.userId;
+                console.log("Processing assignment for user:", userId, "with permissions:", assignment);
                 const userCheckbox = document.getElementById('user_' + userId);
                 if (userCheckbox) {
                     userCheckbox.checked = true;
+                    
+                    // Enable permission checkboxes
+                    const permissionCheckboxes = document.querySelectorAll(`input[name^="permissions_${userId}"]`);
+                    permissionCheckboxes.forEach(function(permissionCheckbox) {
+                        permissionCheckbox.disabled = false;
+                    });
                     
                     // Set permissions
                     if (assignment.canRead) {

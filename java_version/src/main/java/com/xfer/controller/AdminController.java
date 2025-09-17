@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -155,6 +156,7 @@ public class AdminController {
     }
     
     @PostMapping("/edit-ftp/{id}")
+    @Transactional
     public String editFTP(@PathVariable Long id, @RequestParam Map<String, String> params,
                          @RequestParam(value = "userIds", required = false) List<Long> userIds,
                          Authentication authentication, RedirectAttributes redirectAttributes) {
@@ -172,8 +174,12 @@ public class AdminController {
             ftpService.updateAccount(id, name, protocol, host, port, username, password, null);
             
             // Update user assignments with permissions
+            System.out.println("Updating assignments for FTP account " + id);
+            System.out.println("Selected user IDs: " + (userIds != null ? userIds.toString() : "null"));
+            
             if (userIds != null && !userIds.isEmpty()) {
                 // Delete existing assignments
+                System.out.println("Deleting existing assignments...");
                 ftpUserAssignmentRepository.deleteByFtpAccountId(id);
                 
                 // Create new assignments with permissions
@@ -184,15 +190,21 @@ public class AdminController {
                     Boolean canDelete = params.get("permissions_" + userId + "_delete") != null;
                     Boolean canUpload = params.get("permissions_" + userId + "_upload") != null;
                     
+                    System.out.println("Creating assignment for user " + userId + 
+                                     " - Read: " + canRead + ", Write: " + canWrite + 
+                                     ", Delete: " + canDelete + ", Upload: " + canUpload);
+                    
                     // Create assignment with permissions
                     FTPUserAssignment assignment = new FTPUserAssignment(
                         id, userId, currentUser.getId(),
                         canRead, canWrite, canDelete, canUpload
                     );
                     ftpUserAssignmentRepository.save(assignment);
+                    System.out.println("Assignment saved for user " + userId);
                 }
             } else {
                 // Remove all assignments if no users selected
+                System.out.println("No users selected, removing all assignments...");
                 ftpUserAssignmentRepository.deleteByFtpAccountId(id);
             }
             
