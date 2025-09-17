@@ -1,6 +1,4 @@
-- Hata: Bu hesaptan dosya silme yetkiniz yok
-Checking permission for user 2 on account 1 for permission: delete
-Found 1 assignments for this account
-Checking assignment for user 2 - Read: true, Write: true, Delete: true, Upload: true
-Permission check result: true
-- Yukarıdaki gibi kullanıcınun tüm yetkileri var ama yetkin yok diyor bunun sebebi çok önceden tanımladığımız kullanıcı rolündeki bir user sadece indirme ve yükleme işlemi yapabilir şeklindeydi bunu yetki sistemine göre değiştirmemiz gerek
+Tasarımsal Güncellemeler
+- Menüye bir alan ekle dark ve light tema olarak değiştirikebilsin button olarak değilde tıklandoğında sağa sola hareket eden bir şey olmalı
+- Responsive ve daha etkileyici bir tasarım yap
+- Tasarım kullanıcı dostu olsun ve modern bir yapıda olsun
