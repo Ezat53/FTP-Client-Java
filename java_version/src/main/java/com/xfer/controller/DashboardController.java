@@ -49,7 +49,9 @@ public class DashboardController {
     }
     
     @GetMapping("/browse/{accountId}")
-    public String browseFiles(@PathVariable Long accountId, Model model, Authentication authentication) {
+    public String browseFiles(@PathVariable Long accountId, 
+                             @RequestParam(required = false) String path, 
+                             Model model, Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         
         // Check if user has access to this account
@@ -64,7 +66,7 @@ public class DashboardController {
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
             // Get files list
-            List<FTPService.FileInfo> files = ftpService.listFiles(accountId);
+            List<FTPService.FileInfo> files = ftpService.listFiles(accountId, path);
             
             model.addAttribute("account", account);
             model.addAttribute("files", files);

@@ -78,10 +78,18 @@
                 <div class="card hover-lift">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <i class="fas fa-folder me-2"></i>Dosyalar
-                            </h5>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="goBack()" id="backBtn" style="display: none;">
+                                    <i class="fas fa-arrow-left me-1"></i>Geri
+                                </button>
+                                <h5 class="mb-0">
+                                    <i class="fas fa-folder me-2"></i>Dosyalar
+                                </h5>
+                            </div>
                             <div>
+                                <button class="btn btn-sm btn-outline-primary me-2" onclick="refreshFiles()">
+                                    <i class="fas fa-sync-alt me-1"></i>Yenile
+                                </button>
                                 <button class="btn btn-sm btn-success" onclick="showUploadModal()">
                                     <i class="fas fa-upload me-1"></i>Dosya Yükle
                                 </button>
@@ -103,7 +111,13 @@
                                     <tr th:each="file : ${files}">
                                         <td>
                                             <i class="fas fa-file me-2" th:class="${file.directory} ? 'fas fa-folder' : 'fas fa-file'"></i>
-                                            <span th:text="${file.name}">dosya.txt</span>
+                                            <span th:if="${file.directory}" 
+                                                  th:data-dirname="${file.name}"
+                                                  onclick="navigateToDirectory(this.dataset.dirname)" 
+                                                  style="cursor: pointer; color: #007bff;" 
+                                                  th:text="${file.name}">klasör</span>
+                                            <span th:unless="${file.directory}" 
+                                                  th:text="${file.name}">dosya.txt</span>
                                         </td>
                                         <td th:text="${#numbers.formatDecimal(file.size / 1024.0, 1, 1) + ' KB'}">1.2 KB</td>
                                         <td th:text="${file.lastModified > 0 ? #dates.format(new java.util.Date(file.lastModified), 'dd.MM.yyyy HH:mm') : 'Bilinmiyor'}">17.09.2025 15:30</td>
@@ -112,7 +126,7 @@
                                                 <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name})}" class="btn btn-outline-primary">
                                                     <i class="fas fa-download"></i>
                                                 </a>
-                                                <button class="btn btn-outline-danger" th:if="${!file.directory}" th:onclick="'deleteFile(\'' + ${file.name} + '\')'">
+                                                <button class="btn btn-outline-danger" th:if="${!file.directory}" th:data-filename="${file.name}" onclick="deleteFile(this.dataset.filename)">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -174,7 +188,7 @@
             const form = document.getElementById('uploadForm');
             const formData = new FormData(form);
             
-            fetch('/api/upload/' + /*[[${account.id}]]*/ '1', {
+            fetch('/api/upload/' + [[${account.id}]], {
                 method: 'POST',
                 body: formData
             })
@@ -190,7 +204,7 @@
         
         function deleteFile(filename) {
             if (confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) {
-                fetch('/api/delete/' + /*[[${account.id}]]*/ '1' + '/' + filename, {
+                fetch('/api/delete/' + [[${account.id}]] + '/' + filename, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
@@ -204,9 +218,34 @@
             }
         }
         
+        function navigateToDirectory(dirName) {
+            const currentPath = new URLSearchParams(window.location.search).get('path') || '';
+            const newPath = currentPath ? currentPath + '/' + dirName : dirName;
+            window.location.href = '/dashboard/browse/' + [[${account.id}]] + '?path=' + encodeURIComponent(newPath);
+        }
+        
+        function goBack() {
+            const currentPath = new URLSearchParams(window.location.search).get('path') || '';
+            if (currentPath) {
+                const pathParts = currentPath.split('/');
+                pathParts.pop(); // Remove last directory
+                const newPath = pathParts.join('/');
+                window.location.href = '/dashboard/browse/' + [[${account.id}]] + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
+            }
+        }
+        
         function refreshFiles() {
             location.reload();
         }
+        
+        // Show/hide back button based on current path
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = new URLSearchParams(window.location.search).get('path');
+            const backBtn = document.getElementById('backBtn');
+            if (currentPath && backBtn) {
+                backBtn.style.display = 'inline-block';
+            }
+        });
     </script>
 </body>
 </html>

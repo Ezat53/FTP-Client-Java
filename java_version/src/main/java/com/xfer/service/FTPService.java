@@ -175,16 +175,23 @@ public class FTPService {
     
     // File Operations
     public List<FileInfo> listFiles(Long accountId) {
+        return listFiles(accountId, null);
+    }
+    
+    public List<FileInfo> listFiles(Long accountId, String path) {
         try {
             FTPAccount account = getAccountById(accountId)
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
             System.out.println("Listing files for account: " + account.getName() + " (" + account.getProtocol() + ")");
+            if (path != null && !path.isEmpty()) {
+                System.out.println("Path: " + path);
+            }
             
             if ("ftp".equals(account.getProtocol())) {
-                return listFTPFiles(account);
+                return listFTPFiles(account, path);
             } else if ("sftp".equals(account.getProtocol())) {
-                return listSFTPFiles(account);
+                return listSFTPFiles(account, path);
             } else {
                 throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
             }
@@ -196,6 +203,10 @@ public class FTPService {
     }
     
     private List<FileInfo> listFTPFiles(FTPAccount account) {
+        return listFTPFiles(account, null);
+    }
+    
+    private List<FileInfo> listFTPFiles(FTPAccount account, String path) {
         List<FileInfo> files = new ArrayList<>();
         FTPClient ftpClient = new FTPClient();
         
@@ -215,6 +226,14 @@ public class FTPService {
             
             ftpClient.enterLocalPassiveMode();
             System.out.println("Retrieving file list...");
+            
+            // Change to specified directory if path is provided
+            if (path != null && !path.isEmpty() && !path.equals("/")) {
+                boolean changed = ftpClient.changeWorkingDirectory(path);
+                if (!changed) {
+                    System.out.println("Warning: Could not change to directory: " + path);
+                }
+            }
             
             FTPFile[] ftpFiles = ftpClient.listFiles();
             if (ftpFiles != null) {
@@ -251,6 +270,10 @@ public class FTPService {
     }
     
     private List<FileInfo> listSFTPFiles(FTPAccount account) {
+        return listSFTPFiles(account, null);
+    }
+    
+    private List<FileInfo> listSFTPFiles(FTPAccount account, String path) {
         List<FileInfo> files = new ArrayList<>();
         JSch jsch = new JSch();
         Session session = null;
@@ -265,7 +288,9 @@ public class FTPService {
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
             
-            List<ChannelSftp.LsEntry> sftpFiles = sftpChannel.ls(".");
+            // Use specified path or current directory
+            String listPath = (path != null && !path.isEmpty() && !path.equals("/")) ? path : ".";
+            List<ChannelSftp.LsEntry> sftpFiles = sftpChannel.ls(listPath);
             for (ChannelSftp.LsEntry entry : sftpFiles) {
                 if (!entry.getFilename().equals(".") && !entry.getFilename().equals("..")) {
                     FileInfo fileInfo = new FileInfo();
