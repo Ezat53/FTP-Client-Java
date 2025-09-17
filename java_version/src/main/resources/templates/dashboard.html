@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Xfer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .hover-lift {
+            transition: transform 0.2s;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark gradient-bg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cloud-upload-alt me-2"></i>Xfer
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>Kullanıcı
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/logout">
+                            <i class="fas fa-sign-out-alt me-1"></i>Çıkış Yap
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </h2>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- FTP Accounts Card -->
+            <div class="col-md-6">
+                <div class="card hover-lift">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-server me-2"></i>FTP Hesaplarım
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${ftpAccounts != null and !ftpAccounts.empty}" class="list-group list-group-flush">
+                            <div th:each="account : ${ftpAccounts}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1" th:text="${account.name}">FTP Account</h6>
+                                    <small class="text-muted" th:text="${account.host}">host:port</small>
+                                </div>
+                                <span class="badge bg-success">Aktif</span>
+                            </div>
+                        </div>
+                        <div th:if="${ftpAccounts == null or ftpAccounts.empty}" class="text-center text-muted">
+                            <i class="fas fa-server fa-3x mb-3"></i>
+                            <p>Henüz FTP hesabınız bulunmuyor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Card -->
+            <div class="col-md-6">
+                <div class="card hover-lift">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i>Son Aktiviteler
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${recentLogs != null and !recentLogs.empty}" class="list-group list-group-flush">
+                            <div th:each="log : ${recentLogs}" class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span th:text="${log.fileName}">dosya.txt</span>
+                                    <small class="text-muted" th:text="${#temporals.format(log.timestamp, 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</small>
+                                </div>
+                                <small class="text-success" th:text="${log.status}">Başarılı</small>
+                            </div>
+                        </div>
+                        <div th:if="${recentLogs == null or recentLogs.empty}" class="text-center text-muted">
+                            <i class="fas fa-history fa-3x mb-3"></i>
+                            <p>Henüz aktivite bulunmuyor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bolt me-2"></i>Hızlı İşlemler
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-upload me-2"></i>Dosya Yükle
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-success w-100">
+                                    <i class="fas fa-download me-2"></i>Dosya İndir
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-info w-100">
+                                    <i class="fas fa-folder-open me-2"></i>Klasör Görüntüle
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-cog me-2"></i>Ayarlar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 mt-5">
+        <div class="container">
+            <p class="text-muted mb-0">
+                <i class="fas fa-cloud-upload-alt me-2"></i>
+                &copy; 2024 Xfer. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

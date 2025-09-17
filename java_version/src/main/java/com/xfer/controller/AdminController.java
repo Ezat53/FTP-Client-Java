@@ -1,20 +1,25 @@
 package com.xfer.controller;
 
-import com.xfer.entity.FTPAccount;
-import com.xfer.entity.User;
-import com.xfer.service.FTPService;
-import com.xfer.service.AuthService;
-import com.xfer.service.TransferService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.xfer.entity.FTPAccount;
+import com.xfer.entity.User;
+import com.xfer.service.AuthService;
+import com.xfer.service.FTPService;
+import com.xfer.service.TransferService;
 
 @Controller
 @RequestMapping("/admin")
@@ -140,7 +145,7 @@ public class AdminController {
     
     @GetMapping("/add-user")
     public String addUserForm() {
-        return "admin_add_user";
+        return "add_user";
     }
     
     @PostMapping("/add-user")

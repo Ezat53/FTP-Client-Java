@@ -1,12 +1,17 @@
 package com.xfer.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xfer.service.AuthService;
 
@@ -33,8 +38,29 @@ public class AuthController {
         return "login";
     }
     
-    @GetMapping("/logout")
-    public String logout() {
-        return "redirect:/";
+    
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+    
+    @GetMapping("/browse/{accountId}")
+    public String browse(@PathVariable Long accountId, Model model, Authentication authentication) {
+        // TODO: Implement browse functionality
+        model.addAttribute("accountId", accountId);
+        return "browse";
+    }
+    
+    @GetMapping("/add-account")
+    public String addAccountForm() {
+        return "add_account";
+    }
+    
+    @PostMapping("/add-account")
+    public String addAccount(@RequestParam Map<String, String> params, 
+                            Authentication authentication, RedirectAttributes redirectAttributes) {
+        // TODO: Implement add account functionality
+        redirectAttributes.addFlashAttribute("success", "Hesap eklendi");
+        return "redirect:/dashboard";
     }
 }
