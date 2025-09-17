@@ -158,7 +158,7 @@ function browseFiles(accountId) {
     $('#fileBrowserModal').modal('show');
     
     // Load files
-    $.get('/ftp-client/api/list/' + accountId)
+    $.get('/xfer-ftp-web-service/api/list/' + accountId)
         .done(function(response) {
             if (response.success) {
                 let html = '<div class="row">';
@@ -189,7 +189,7 @@ function browseFiles(accountId) {
 }
 
 function downloadFile(accountId, filename) {
-    window.open('/ftp-client/api/download/' + accountId + '/' + filename, '_blank');
+    window.open('/xfer-ftp-web-service/api/download/' + accountId + '/' + filename, '_blank');
 }
 
 function uploadFile(accountId) {
@@ -202,7 +202,7 @@ function uploadFile(accountId) {
             formData.append('file', file);
             
             $.ajax({
-                url: '/ftp-client/api/upload/' + accountId,
+                url: '/xfer-ftp-web-service/api/upload/' + accountId,
                 type: 'POST',
                 data: formData,
                 processData: false,

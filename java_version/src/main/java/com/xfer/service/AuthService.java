@@ -1,13 +1,15 @@
 package com.xfer.service;
 
-import com.xfer.entity.User;
-import com.xfer.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.xfer.entity.User;
+import com.xfer.repository.UserRepository;
 
 @Service
 @Transactional

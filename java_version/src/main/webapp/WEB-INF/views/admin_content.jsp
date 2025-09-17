@@ -143,7 +143,7 @@ function deleteFTPAccount(accountId) {
     if (confirm('Bu FTP hesabını silmek istediğinizden emin misiniz?')) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '/ftp-client/admin/delete-ftp/' + accountId;
+        form.action = '/xfer-ftp-web-service/admin/delete-ftp/' + accountId;
         document.body.appendChild(form);
         form.submit();
     }
@@ -153,7 +153,7 @@ function deleteUser(userId) {
     if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '/ftp-client/admin/delete-user/' + userId;
+        form.action = '/xfer-ftp-web-service/admin/delete-user/' + userId;
         document.body.appendChild(form);
         form.submit();
     }

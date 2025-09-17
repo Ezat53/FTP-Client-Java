@@ -150,7 +150,7 @@ function uploadFile(accountId, file) {
     const formData = new FormData();
     formData.append('file', file);
     
-    return makeRequest(`/ftp-client/api/upload/${accountId}`, {
+        return makeRequest(`/xfer-ftp-web-service/api/upload/${accountId}`, {
         method: 'POST',
         body: formData,
         headers: {} // Let browser set Content-Type for FormData
@@ -158,17 +158,17 @@ function uploadFile(accountId, file) {
 }
 
 function downloadFile(accountId, filename) {
-    window.open(`/ftp-client/api/download/${accountId}/${filename}`, '_blank');
+    window.open(`/xfer-ftp-web-service/api/download/${accountId}/${filename}`, '_blank');
 }
 
 function deleteFile(accountId, filename) {
-    return makeRequest(`/ftp-client/api/delete/${accountId}/${filename}`, {
+    return makeRequest(`/xfer-ftp-web-service/api/delete/${accountId}/${filename}`, {
         method: 'DELETE'
     });
 }
 
 function listFiles(accountId) {
-    return makeRequest(`/ftp-client/api/list/${accountId}`);
+    return makeRequest(`/xfer-ftp-web-service/api/list/${accountId}`);
 }
 
 // FTP Account operations
@@ -176,7 +176,7 @@ function deleteFTPAccount(accountId) {
     confirmAction('Bu FTP hesabını silmek istediğinizden emin misiniz?', function() {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/ftp-client/admin/delete-ftp/${accountId}`;
+        form.action = `/xfer-ftp-web-service/admin/delete-ftp/${accountId}`;
         document.body.appendChild(form);
         form.submit();
     });
@@ -186,7 +186,7 @@ function deleteUser(userId) {
     confirmAction('Bu kullanıcıyı silmek istediğinizden emin misiniz?', function() {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/ftp-client/admin/delete-user/${userId}`;
+        form.action = `/xfer-ftp-web-service/admin/delete-user/${userId}`;
         document.body.appendChild(form);
         form.submit();
     });

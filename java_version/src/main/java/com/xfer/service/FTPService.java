@@ -1,17 +1,18 @@
 package com.xfer.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.xfer.entity.FTPAccount;
 import com.xfer.entity.FTPUserAssignment;
 import com.xfer.entity.User;
 import com.xfer.repository.FTPAccountRepository;
 import com.xfer.repository.FTPUserAssignmentRepository;
 import com.xfer.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -57,7 +58,7 @@ public class FTPService {
         List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
         return assignments.stream()
                 .map(FTPUserAssignment::getUser)
-                .toList();
+                .collect(java.util.stream.Collectors.toList());
     }
     
     public boolean assignAccountToUsers(Long accountId, List<Long> userIds, Long assignedBy) {

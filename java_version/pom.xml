@@ -6,16 +6,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xfer</groupId>
-    <artifactId>ftp-client</artifactId>
+    <artifactId>xfer-ftp-web-service</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <name>FTP Client</name>
+    <name>Xfer FTP Web Service</name>
     <description>FTP/SFTP Client Web Application</description>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>2.7.18</spring.boot.version>
     </properties>
@@ -57,9 +57,16 @@
         </dependency>
         
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.44.1.0</version>
             <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>6.2.7.Final</version>
         </dependency>
 
         <!-- FTP/SFTP Libraries -->
@@ -116,7 +123,7 @@
     </dependencies>
 
     <build>
-        <finalName>ftp-client</finalName>
+        <finalName>xfer-ftp-web-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

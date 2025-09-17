@@ -5,7 +5,7 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <display-name>FTP Client</display-name>
+    <display-name>Xfer FTP Web Service</display-name>
     <description>FTP/SFTP Client Web Application</description>
 
     <!-- Spring Boot configuration -->
