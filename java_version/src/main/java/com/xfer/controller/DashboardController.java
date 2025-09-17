@@ -82,10 +82,11 @@ public class DashboardController {
                     .findFirst()
                     .orElse(null);
             
-            model.addAttribute("account", account);
-            model.addAttribute("files", files);
-            model.addAttribute("currentUser", currentUser);
-            model.addAttribute("assignment", userAssignment);
+        model.addAttribute("account", account);
+        model.addAttribute("files", files);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("assignment", userAssignment);
+        model.addAttribute("currentPath", path != null ? path : "/");
             
             return "browse";
             

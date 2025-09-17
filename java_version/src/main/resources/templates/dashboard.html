@@ -115,8 +115,8 @@
                         <div th:if="${recentLogs != null and !recentLogs.empty}" class="list-group list-group-flush">
                             <div th:each="log : ${recentLogs}" class="list-group-item">
                                 <div class="d-flex justify-content-between">
-                                    <span th:text="${log.fileName}">dosya.txt</span>
-                                    <small class="text-muted" th:text="${#temporals.format(log.timestamp, 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</small>
+                                    <span th:text="${log.filename}">dosya.txt</span>
+                                    <small class="text-muted" th:text="${#temporals.format(log.createdAt, 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</small>
                                 </div>
                                 <small class="text-success" th:text="${log.status}">Başarılı</small>
                             </div>

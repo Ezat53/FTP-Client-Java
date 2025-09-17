@@ -41,6 +41,7 @@ public class FTPController {
     public ResponseEntity<Map<String, Object>> uploadFile(
             @PathVariable Long accountId,
             @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "path", required = false) String path,
             Authentication authentication) {
         
         Map<String, Object> response = new HashMap<>();
@@ -85,9 +86,9 @@ public class FTPController {
             
             // Upload directly to FTP/SFTP server
             String filename = file.getOriginalFilename();
-            System.out.println("Starting upload for file: " + filename + " to account: " + accountId);
+            System.out.println("Starting upload for file: " + filename + " to account: " + accountId + " at path: " + (path != null ? path : "default"));
             
-            boolean success = ftpService.uploadFile(accountId, file);
+            boolean success = ftpService.uploadFile(accountId, file, path);
             
             if (success) {
                 System.out.println("Upload successful for file: " + filename);

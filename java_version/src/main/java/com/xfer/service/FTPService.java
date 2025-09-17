@@ -337,16 +337,20 @@ public class FTPService {
     }
     
     public boolean uploadFile(Long accountId, MultipartFile file) {
+        return uploadFile(accountId, file, null);
+    }
+    
+    public boolean uploadFile(Long accountId, MultipartFile file, String path) {
         try {
             FTPAccount account = getAccountById(accountId)
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
-            System.out.println("Uploading file: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes) to " + account.getProtocol() + "://" + account.getHost());
+            System.out.println("Uploading file: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes) to " + account.getProtocol() + "://" + account.getHost() + " at path: " + (path != null ? path : "default"));
             
             if ("ftp".equals(account.getProtocol())) {
-                return uploadToFTP(account, file);
+                return uploadToFTP(account, file, path);
             } else if ("sftp".equals(account.getProtocol())) {
-                return uploadToSFTP(account, file);
+                return uploadToSFTP(account, file, path);
             } else {
                 throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
             }
@@ -358,6 +362,10 @@ public class FTPService {
     }
     
     private boolean uploadToFTP(FTPAccount account, MultipartFile file) {
+        return uploadToFTP(account, file, null);
+    }
+    
+    private boolean uploadToFTP(FTPAccount account, MultipartFile file, String path) {
         FTPClient ftpClient = new FTPClient();
         
         try {
@@ -383,34 +391,40 @@ public class FTPService {
             System.out.println("Current working directory: " + ftpClient.printWorkingDirectory());
             System.out.println("FTP server type: " + ftpClient.getSystemType());
             
-            // Change to the remote path if specified
-            System.out.println("Account remote path: '" + account.getRemotePath() + "'");
-            if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
-                String remotePath = account.getRemotePath().trim();
-                System.out.println("Processing remote path: '" + remotePath + "'");
-                if (!remotePath.equals("/")) {
-                    System.out.println("Changing to remote path: " + remotePath);
-                    boolean changed = ftpClient.changeWorkingDirectory(remotePath);
-                    if (changed) {
-                        System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
-                    } else {
-                        System.out.println("Failed to change to remote path: " + remotePath);
-                        System.out.println("FTP reply: " + ftpClient.getReplyString());
-                        // Try to create the directory
-                        System.out.println("Attempting to create directory: " + remotePath);
-                        boolean created = ftpClient.makeDirectory(remotePath);
-                        if (created) {
-                            System.out.println("Directory created successfully");
-                            ftpClient.changeWorkingDirectory(remotePath);
-                        } else {
-                            System.out.println("Failed to create directory: " + ftpClient.getReplyString());
-                        }
-                    }
+            // Determine target directory
+            String targetPath = null;
+            if (path != null && !path.trim().isEmpty()) {
+                targetPath = path.trim();
+                System.out.println("Using specified path: " + targetPath);
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
+                targetPath = account.getRemotePath().trim();
+                System.out.println("Using account remote path: " + targetPath);
+            } else {
+                targetPath = "/GarantiAsset";
+                System.out.println("Using default path: " + targetPath);
+            }
+            
+            // Change to the target directory
+            if (targetPath != null && !targetPath.equals("/")) {
+                System.out.println("Changing to target directory: " + targetPath);
+                boolean changed = ftpClient.changeWorkingDirectory(targetPath);
+                if (changed) {
+                    System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
                 } else {
-                    System.out.println("Remote path is root (/), staying in current directory");
+                    System.out.println("Failed to change to target directory: " + targetPath);
+                    System.out.println("FTP reply: " + ftpClient.getReplyString());
+                    // Try to create the directory
+                    System.out.println("Attempting to create directory: " + targetPath);
+                    boolean created = ftpClient.makeDirectory(targetPath);
+                    if (created) {
+                        System.out.println("Directory created successfully");
+                        ftpClient.changeWorkingDirectory(targetPath);
+                    } else {
+                        System.out.println("Failed to create directory: " + ftpClient.getReplyString());
+                    }
                 }
             } else {
-                System.out.println("No remote path specified, staying in current directory");
+                System.out.println("Target path is root (/), staying in current directory");
             }
             
             
@@ -509,6 +523,10 @@ public class FTPService {
     }
     
     private boolean uploadToSFTP(FTPAccount account, MultipartFile file) {
+        return uploadToSFTP(account, file, null);
+    }
+    
+    private boolean uploadToSFTP(FTPAccount account, MultipartFile file, String path) {
         JSch jsch = new JSch();
         Session session = null;
         ChannelSftp sftpChannel = null;
@@ -522,27 +540,39 @@ public class FTPService {
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
             
-            // Change to the remote path if specified
-            if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
-                String remotePath = account.getRemotePath().trim();
-                if (!remotePath.equals("/")) {
-                    System.out.println("Changing to remote path: " + remotePath);
+            // Determine target directory
+            String targetPath = null;
+            if (path != null && !path.trim().isEmpty()) {
+                targetPath = path.trim();
+                System.out.println("Using specified path: " + targetPath);
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
+                targetPath = account.getRemotePath().trim();
+                System.out.println("Using account remote path: " + targetPath);
+            } else {
+                targetPath = "/GarantiAsset";
+                System.out.println("Using default path: " + targetPath);
+            }
+            
+            // Change to the target directory
+            if (targetPath != null && !targetPath.equals("/")) {
+                System.out.println("Changing to target directory: " + targetPath);
+                try {
+                    sftpChannel.cd(targetPath);
+                    System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                } catch (SftpException e) {
+                    System.out.println("Failed to change to target directory: " + targetPath + " - " + e.getMessage());
+                    // Try to create the directory
                     try {
-                        sftpChannel.cd(remotePath);
-                        System.out.println("Successfully changed to: " + sftpChannel.pwd());
-                    } catch (SftpException e) {
-                        System.out.println("Failed to change to remote path: " + remotePath + " - " + e.getMessage());
-                        // Try to create the directory
-                        try {
-                            System.out.println("Attempting to create directory: " + remotePath);
-                            sftpChannel.mkdir(remotePath);
-                            sftpChannel.cd(remotePath);
-                            System.out.println("Directory created and changed successfully");
-                        } catch (SftpException e2) {
-                            System.out.println("Failed to create directory: " + e2.getMessage());
-                        }
+                        System.out.println("Attempting to create directory: " + targetPath);
+                        sftpChannel.mkdir(targetPath);
+                        sftpChannel.cd(targetPath);
+                        System.out.println("Directory created and changed successfully");
+                    } catch (SftpException e2) {
+                        System.out.println("Failed to create directory: " + e2.getMessage());
                     }
                 }
+            } else {
+                System.out.println("Target path is root (/), staying in current directory");
             }
             
             // Clean filename for SFTP
