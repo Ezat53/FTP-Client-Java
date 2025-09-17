@@ -21,11 +21,11 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark gradient-bg">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" th:href="@{/}">
                 <i class="fas fa-cloud-upload-alt me-2"></i>Xfer
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/admin">
+                <a class="nav-link" th:href="@{/admin}">
                     <i class="fas fa-cogs me-1"></i>Admin Panel
                 </a>
                 <div class="nav-item dropdown">
@@ -78,7 +78,7 @@
                             </div>
                             
                             <div class="d-flex justify-content-between">
-                                <a href="/admin" class="btn btn-secondary">
+                                <a th:href="@{/admin}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>Geri Dön
                                 </a>
                                 <button type="submit" class="btn btn-primary">
