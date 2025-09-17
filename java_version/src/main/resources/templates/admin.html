@@ -71,7 +71,7 @@
 
         <!-- Quick Stats -->
         <div class="row g-4 mb-4">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-center hover-lift">
                     <div class="card-body">
                         <i class="fas fa-users fa-3x text-primary mb-3"></i>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-center hover-lift">
                     <div class="card-body">
                         <i class="fas fa-server fa-3x text-success mb-3"></i>
@@ -89,11 +89,20 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="card text-center hover-lift">
+                    <div class="card-body">
+                        <i class="fas fa-exchange-alt fa-3x text-info mb-3"></i>
+                        <h4 th:text="${totalTransfers != null ? totalTransfers : 0}">0</h4>
+                        <p class="text-muted">Toplam Transfer</p>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3">
                 <div class="card text-center hover-lift">
                     <div class="card-body">
-                        <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
-                        <h4>24</h4>
+                        <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                        <h4 th:text="${todayTransfers != null ? todayTransfers : 0}">0</h4>
                         <p class="text-muted">Bugünkü Transfer</p>
                     </div>
                 </div>
@@ -101,8 +110,8 @@
             <div class="col-md-3">
                 <div class="card text-center hover-lift">
                     <div class="card-body">
-                        <i class="fas fa-database fa-3x text-warning mb-3"></i>
-                        <h4>1.2GB</h4>
+                        <i class="fas fa-database fa-3x text-danger mb-3"></i>
+                        <h4 th:text="${totalSize != null ? totalSize + 'MB' : '0MB'}">0MB</h4>
                         <p class="text-muted">Toplam Boyut</p>
                     </div>
                 </div>
@@ -247,19 +256,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>17.09.2025 15:30</td>
-                                                <td>admin</td>
-                                                <td>Dosya Yükleme</td>
-                                                <td>test.txt</td>
-                                                <td><span class="badge bg-success">Başarılı</span></td>
+                                            <tr th:if="${recentLogs != null and !recentLogs.empty}" th:each="log : ${recentLogs}">
+                                                <td th:text="${#temporals.format(log.createdAt, 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</td>
+                                                <td th:text="${log.user != null ? log.user.username : 'Bilinmiyor'}">admin</td>
+                                                <td th:text="${log.action == 'upload' ? 'Dosya Yükleme' : (log.action == 'download' ? 'Dosya İndirme' : (log.action == 'delete' ? 'Dosya Silme' : 'Listeleme'))}">Dosya Yükleme</td>
+                                                <td th:text="${log.filename}">test.txt</td>
+                                                <td>
+                                                    <span th:if="${log.status == 'success'}" class="badge bg-success">Başarılı</span>
+                                                    <span th:if="${log.status == 'error'}" class="badge bg-danger">Hata</span>
+                                                </td>
                                             </tr>
-                                            <tr>
-                                                <td>17.09.2025 15:25</td>
-                                                <td>user1</td>
-                                                <td>Dosya İndirme</td>
-                                                <td>document.pdf</td>
-                                                <td><span class="badge bg-success">Başarılı</span></td>
+                                            <tr th:if="${recentLogs == null or recentLogs.empty}">
+                                                <td colspan="5" class="text-center text-muted">Henüz log kaydı bulunmuyor</td>
                                             </tr>
                                         </tbody>
                                     </table>

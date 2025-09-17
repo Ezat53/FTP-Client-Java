@@ -76,11 +76,14 @@ public class DashboardController {
             List<FTPService.FileInfo> files = ftpService.listFiles(accountId, path);
             
             // Get user's assignment for this account
-            List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
-            FTPUserAssignment userAssignment = assignments.stream()
-                    .filter(assignment -> assignment.getUserId().equals(currentUser.getId()))
-                    .findFirst()
-                    .orElse(null);
+            FTPUserAssignment userAssignment = null;
+            if (!"admin".equals(currentUser.getRole())) {
+                List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
+                userAssignment = assignments.stream()
+                        .filter(assignment -> assignment.getUserId().equals(currentUser.getId()))
+                        .findFirst()
+                        .orElse(null);
+            }
             
         model.addAttribute("account", account);
         model.addAttribute("files", files);

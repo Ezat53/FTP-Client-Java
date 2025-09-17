@@ -1,3 +1,2 @@
-- FTP güncelleme alanında yeni kullanıcı atanınca herhangi bir değişiklik olmuyor eski kullanıcıyı seçmesemde ilk ftp hesabı oluştururken atadığım kullanıcıda kalıyor yeni atama yaptığım ona atanmıyor
-- FTP hesabında bir atama varken hala silinmiyor
-- Bir hesap tüm izinlere sahip olsa bile browse sayfasında bunları görüyorum zinler: Okuma=false, Yazma=false, Silme=false, Yükleme=false
+- Kullanıcı yetkisine sahip bir user'a okuma yazma silme yükleme yetkisi versem bile silerken veya yüklerken yetkiniz yok hatası alıyorum muhtemelen bu kullanıcı yetkisine atanmış engellemeden kaynaklanıyor.
+- FTP hesabında  güncelleme yaparken tüm atamaları kaldırıp kaydediyorum ama atamalar kalkmıyor veya yeni atama yaptığım hesaba işlenmiyor

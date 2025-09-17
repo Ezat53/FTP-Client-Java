@@ -125,25 +125,25 @@
                                                 <div class="row">
                                                     <div class="col-md-3">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'read_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="read">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'read_' + ${user.id}" th:name="'permissions_' + ${user.id} + '_read'" value="read">
                                                             <label class="form-check-label" th:for="'read_' + ${user.id}">Okuma</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'write_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="write">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'write_' + ${user.id}" th:name="'permissions_' + ${user.id} + '_write'" value="write">
                                                             <label class="form-check-label" th:for="'write_' + ${user.id}">Yazma</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'delete_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="delete">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'delete_' + ${user.id}" th:name="'permissions_' + ${user.id} + '_delete'" value="delete">
                                                             <label class="form-check-label" th:for="'delete_' + ${user.id}">Silme</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'upload_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="upload">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'upload_' + ${user.id}" th:name="'permissions_' + ${user.id} + '_upload'" value="upload">
                                                             <label class="form-check-label" th:for="'upload_' + ${user.id}">Yükleme</label>
                                                         </div>
                                                     </div>
