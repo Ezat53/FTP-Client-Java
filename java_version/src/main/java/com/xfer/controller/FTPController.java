@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.xfer.entity.FTPAccount;
 import com.xfer.entity.User;
-import com.xfer.service.FTPOperationsService;
 import com.xfer.service.FTPService;
 import com.xfer.service.TransferService;
 
@@ -37,8 +36,6 @@ public class FTPController {
     @Autowired
     private FTPService ftpService;
     
-    @Autowired
-    private FTPOperationsService ftpOperationsService;
     
     @Autowired
     private TransferService transferService;
@@ -97,16 +94,7 @@ public class FTPController {
             
             try {
                 // Upload to FTP/SFTP server
-                boolean success;
-                if ("ftp".equals(account.getProtocol())) {
-                    success = ftpOperationsService.uploadToFTP(account, filePath.toFile(), filename);
-                } else if ("sftp".equals(account.getProtocol())) {
-                    success = ftpOperationsService.uploadToSFTP(account, filePath.toFile(), filename);
-                } else {
-                    response.put("success", false);
-                    response.put("message", "Desteklenmeyen protokol");
-                    return ResponseEntity.badRequest().body(response);
-                }
+                boolean success = ftpService.uploadFile(accountId, file);
                 
                 if (success) {
                     // Log the transfer
@@ -160,14 +148,7 @@ public class FTPController {
             
             FTPAccount account = accountOpt.get();
             
-            byte[] fileData;
-            if ("ftp".equals(account.getProtocol())) {
-                fileData = ftpOperationsService.downloadFromFTP(account, filename);
-            } else if ("sftp".equals(account.getProtocol())) {
-                fileData = ftpOperationsService.downloadFromSFTP(account, filename);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            byte[] fileData = ftpService.downloadFile(accountId, filename);
             
             // Log the transfer
             transferService.logTransfer(currentUser.getId(), accountId, "download", 
@@ -222,16 +203,7 @@ public class FTPController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            boolean success;
-            if ("ftp".equals(account.getProtocol())) {
-                success = ftpOperationsService.deleteFromFTP(account, filename);
-            } else if ("sftp".equals(account.getProtocol())) {
-                success = ftpOperationsService.deleteFromSFTP(account, filename);
-            } else {
-                response.put("success", false);
-                response.put("message", "Desteklenmeyen protokol");
-                return ResponseEntity.badRequest().body(response);
-            }
+            boolean success = ftpService.deleteFile(accountId, filename);
             
             if (success) {
                 transferService.logTransfer(currentUser.getId(), accountId, "delete", 
@@ -283,16 +255,7 @@ public class FTPController {
             
             FTPAccount account = accountOpt.get();
             
-            List<String> files;
-            if ("ftp".equals(account.getProtocol())) {
-                files = ftpOperationsService.listFTPFiles(account);
-            } else if ("sftp".equals(account.getProtocol())) {
-                files = ftpOperationsService.listSFTPFiles(account);
-            } else {
-                response.put("success", false);
-                response.put("message", "Desteklenmeyen protokol");
-                return ResponseEntity.badRequest().body(response);
-            }
+            List<FTPService.FileInfo> files = ftpService.listFiles(accountId);
             
             // Log the transfer
             transferService.logTransfer(currentUser.getId(), accountId, "list", 

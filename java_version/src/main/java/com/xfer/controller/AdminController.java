@@ -38,6 +38,11 @@ public class AdminController {
     public String adminPanel(Model model, Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         
+        // Check if user is admin
+        if (!"admin".equals(currentUser.getRole())) {
+            return "redirect:/dashboard?error=access_denied";
+        }
+        
         // Get all FTP accounts
         List<FTPAccount> allAccounts = ftpService.getAllAccounts();
         
@@ -52,7 +57,14 @@ public class AdminController {
     }
     
     @GetMapping("/add-ftp")
-    public String addFTPForm(Model model) {
+    public String addFTPForm(Model model, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        
+        // Check if user is admin
+        if (!"admin".equals(currentUser.getRole())) {
+            return "redirect:/dashboard?error=access_denied";
+        }
+        
         List<User> users = authService.getAllUsers();
         model.addAttribute("users", users);
         return "admin_add_ftp";
@@ -64,6 +76,12 @@ public class AdminController {
                         Authentication authentication, RedirectAttributes redirectAttributes) {
         
         User currentUser = (User) authentication.getPrincipal();
+        
+        // Check if user is admin
+        if (!"admin".equals(currentUser.getRole())) {
+            redirectAttributes.addFlashAttribute("error", "Bu işlem için admin yetkisi gerekli");
+            return "redirect:/dashboard";
+        }
         
         try {
             String name = params.get("name");
@@ -144,12 +162,28 @@ public class AdminController {
     }
     
     @GetMapping("/add-user")
-    public String addUserForm() {
+    public String addUserForm(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        
+        // Check if user is admin
+        if (!"admin".equals(currentUser.getRole())) {
+            return "redirect:/dashboard?error=access_denied";
+        }
+        
         return "add_user";
     }
     
     @PostMapping("/add-user")
-    public String addUser(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+    public String addUser(@RequestParam Map<String, String> params, 
+                         Authentication authentication, RedirectAttributes redirectAttributes) {
+        User currentUser = (User) authentication.getPrincipal();
+        
+        // Check if user is admin
+        if (!"admin".equals(currentUser.getRole())) {
+            redirectAttributes.addFlashAttribute("error", "Bu işlem için admin yetkisi gerekli");
+            return "redirect:/dashboard";
+        }
+        
         try {
             String username = params.get("username");
             String password = params.get("password");

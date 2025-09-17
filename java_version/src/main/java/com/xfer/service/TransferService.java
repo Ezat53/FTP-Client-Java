@@ -1,13 +1,14 @@
 package com.xfer.service;
 
-import com.xfer.entity.TransferLog;
-import com.xfer.repository.TransferLogRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.xfer.entity.TransferLog;
+import com.xfer.repository.TransferLogRepository;
 
 @Service
 @Transactional
@@ -44,5 +45,44 @@ public class TransferService {
     
     public Long getFailedTransferCount(Long userId) {
         return transferLogRepository.countFailedTransfersByUserId(userId);
+    }
+    
+    public List<TransferLog> getAllTransferLogs(int limit) {
+        return transferLogRepository.findTopByOrderByCreatedAtDesc(limit);
+    }
+    
+    public TransferStats getTransferStats() {
+        long totalTransfers = transferLogRepository.count();
+        long successfulTransfers = transferLogRepository.countByStatus("success");
+        long failedTransfers = transferLogRepository.countByStatus("error");
+        
+        double successRate = totalTransfers > 0 ? (double) successfulTransfers / totalTransfers * 100 : 0;
+        
+        return new TransferStats(totalTransfers, successfulTransfers, failedTransfers, successRate);
+    }
+    
+    public List<TransferLog> getTransferLogsByAction(String action, int limit) {
+        return transferLogRepository.findByActionOrderByCreatedAtDesc(action, limit);
+    }
+    
+    // Transfer Stats class
+    public static class TransferStats {
+        private long totalTransfers;
+        private long successfulTransfers;
+        private long failedTransfers;
+        private double successRate;
+        
+        public TransferStats(long totalTransfers, long successfulTransfers, long failedTransfers, double successRate) {
+            this.totalTransfers = totalTransfers;
+            this.successfulTransfers = successfulTransfers;
+            this.failedTransfers = failedTransfers;
+            this.successRate = successRate;
+        }
+        
+        // Getters
+        public long getTotalTransfers() { return totalTransfers; }
+        public long getSuccessfulTransfers() { return successfulTransfers; }
+        public long getFailedTransfers() { return failedTransfers; }
+        public double getSuccessRate() { return successRate; }
     }
 }

@@ -73,7 +73,12 @@ public class AuthService {
         return userRepository.findAll();
     }
     
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+    public boolean deleteUser(Long userId) {
+        try {
+            userRepository.deleteById(userId);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

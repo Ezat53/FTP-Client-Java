@@ -97,17 +97,17 @@
                                 <tbody>
                                     <tr th:each="file : ${files}">
                                         <td>
-                                            <i class="fas fa-file me-2" th:class="${file.isDirectory} ? 'fas fa-folder' : 'fas fa-file'"></i>
+                                            <i class="fas fa-file me-2" th:class="${file.directory} ? 'fas fa-folder' : 'fas fa-file'"></i>
                                             <span th:text="${file.name}">dosya.txt</span>
                                         </td>
-                                        <td th:text="${file.size}">1.2 MB</td>
-                                        <td th:text="${#temporals.format(file.lastModified, 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</td>
+                                        <td th:text="${#numbers.formatDecimal(file.size / 1024.0, 1, 1) + ' KB'}">1.2 KB</td>
+                                        <td th:text="${#temporals.format(#temporals.createInstant(file.lastModified), 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" th:if="${!file.isDirectory}">
+                                                <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name})}" class="btn btn-outline-primary">
                                                     <i class="fas fa-download"></i>
-                                                </button>
-                                                <button class="btn btn-outline-danger">
+                                                </a>
+                                                <button class="btn btn-outline-danger" th:if="${!file.directory}" th:onclick="'deleteFile(\'' + ${file.name} + '\')'">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -181,6 +181,22 @@
                     alert('Hata: ' + data.message);
                 }
             });
+        }
+        
+        function deleteFile(filename) {
+            if (confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) {
+                fetch('/api/delete/' + /*[[${account.id}]]*/ '1' + '/' + filename, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Hata: ' + data.message);
+                    }
+                });
+            }
         }
         
         function refreshFiles() {

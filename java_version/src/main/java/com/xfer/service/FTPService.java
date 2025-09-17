@@ -1,12 +1,24 @@
 package com.xfer.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import com.xfer.entity.FTPAccount;
 import com.xfer.entity.FTPUserAssignment;
 import com.xfer.entity.User;
@@ -139,5 +151,306 @@ public class FTPService {
         List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
         return assignments.stream()
                 .anyMatch(assignment -> assignment.getUserId().equals(userId));
+    }
+    
+    // File Operations
+    public List<FileInfo> listFiles(Long accountId) {
+        FTPAccount account = getAccountById(accountId)
+                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+        
+        if ("ftp".equals(account.getProtocol())) {
+            return listFTPFiles(account);
+        } else if ("sftp".equals(account.getProtocol())) {
+            return listSFTPFiles(account);
+        } else {
+            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        }
+    }
+    
+    private List<FileInfo> listFTPFiles(FTPAccount account) {
+        List<FileInfo> files = new ArrayList<>();
+        FTPClient ftpClient = new FTPClient();
+        
+        try {
+            ftpClient.connect(account.getHost(), account.getPort());
+            ftpClient.login(account.getUsername(), account.getPassword());
+            ftpClient.enterLocalPassiveMode();
+            
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            for (FTPFile ftpFile : ftpFiles) {
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setName(ftpFile.getName());
+                fileInfo.setSize(ftpFile.getSize());
+                fileInfo.setDirectory(ftpFile.isDirectory());
+                fileInfo.setLastModified(ftpFile.getTimestamp() != null ? ftpFile.getTimestamp().getTimeInMillis() : 0L);
+                files.add(fileInfo);
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("FTP dosya listesi alınırken hata: " + e.getMessage());
+        } finally {
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                // Ignore
+            }
+        }
+        
+        return files;
+    }
+    
+    private List<FileInfo> listSFTPFiles(FTPAccount account) {
+        List<FileInfo> files = new ArrayList<>();
+        JSch jsch = new JSch();
+        Session session = null;
+        ChannelSftp sftpChannel = null;
+        
+        try {
+            session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
+            session.setPassword(account.getPassword());
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            
+            sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+            
+            List<ChannelSftp.LsEntry> sftpFiles = sftpChannel.ls(".");
+            for (ChannelSftp.LsEntry entry : sftpFiles) {
+                if (!entry.getFilename().equals(".") && !entry.getFilename().equals("..")) {
+                    FileInfo fileInfo = new FileInfo();
+                    fileInfo.setName(entry.getFilename());
+                    fileInfo.setSize(entry.getAttrs().getSize());
+                    fileInfo.setDirectory(entry.getAttrs().isDir());
+                    fileInfo.setLastModified(entry.getAttrs().getMTime() * 1000L);
+                    files.add(fileInfo);
+                }
+            }
+            
+        } catch (JSchException | SftpException e) {
+            throw new RuntimeException("SFTP dosya listesi alınırken hata: " + e.getMessage());
+        } finally {
+            if (sftpChannel != null) {
+                sftpChannel.disconnect();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
+        }
+        
+        return files;
+    }
+    
+    public boolean uploadFile(Long accountId, MultipartFile file) {
+        FTPAccount account = getAccountById(accountId)
+                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+        
+        if ("ftp".equals(account.getProtocol())) {
+            return uploadToFTP(account, file);
+        } else if ("sftp".equals(account.getProtocol())) {
+            return uploadToSFTP(account, file);
+        } else {
+            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        }
+    }
+    
+    private boolean uploadToFTP(FTPAccount account, MultipartFile file) {
+        FTPClient ftpClient = new FTPClient();
+        
+        try {
+            ftpClient.connect(account.getHost(), account.getPort());
+            ftpClient.login(account.getUsername(), account.getPassword());
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            
+            return ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
+            
+        } catch (Exception e) {
+            throw new RuntimeException("FTP yükleme hatası: " + e.getMessage());
+        } finally {
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                // Ignore
+            }
+        }
+    }
+    
+    private boolean uploadToSFTP(FTPAccount account, MultipartFile file) {
+        JSch jsch = new JSch();
+        Session session = null;
+        ChannelSftp sftpChannel = null;
+        
+        try {
+            session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
+            session.setPassword(account.getPassword());
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            
+            sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+            
+            sftpChannel.put(file.getInputStream(), file.getOriginalFilename());
+            return true;
+            
+        } catch (JSchException | SftpException | IOException e) {
+            throw new RuntimeException("SFTP yükleme hatası: " + e.getMessage());
+        } finally {
+            if (sftpChannel != null) {
+                sftpChannel.disconnect();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
+        }
+    }
+    
+    public byte[] downloadFile(Long accountId, String filename) {
+        FTPAccount account = getAccountById(accountId)
+                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+        
+        if ("ftp".equals(account.getProtocol())) {
+            return downloadFromFTP(account, filename);
+        } else if ("sftp".equals(account.getProtocol())) {
+            return downloadFromSFTP(account, filename);
+        } else {
+            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        }
+    }
+    
+    private byte[] downloadFromFTP(FTPAccount account, String filename) {
+        FTPClient ftpClient = new FTPClient();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        
+        try {
+            ftpClient.connect(account.getHost(), account.getPort());
+            ftpClient.login(account.getUsername(), account.getPassword());
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            
+            ftpClient.retrieveFile(filename, outputStream);
+            return outputStream.toByteArray();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("FTP indirme hatası: " + e.getMessage());
+        } finally {
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                // Ignore
+            }
+        }
+    }
+    
+    private byte[] downloadFromSFTP(FTPAccount account, String filename) {
+        JSch jsch = new JSch();
+        Session session = null;
+        ChannelSftp sftpChannel = null;
+        
+        try {
+            session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
+            session.setPassword(account.getPassword());
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            
+            sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+            
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            sftpChannel.get(filename, outputStream);
+            return outputStream.toByteArray();
+            
+        } catch (JSchException | SftpException e) {
+            throw new RuntimeException("SFTP indirme hatası: " + e.getMessage());
+        } finally {
+            if (sftpChannel != null) {
+                sftpChannel.disconnect();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
+        }
+    }
+    
+    public boolean deleteFile(Long accountId, String filename) {
+        FTPAccount account = getAccountById(accountId)
+                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+        
+        if ("ftp".equals(account.getProtocol())) {
+            return deleteFromFTP(account, filename);
+        } else if ("sftp".equals(account.getProtocol())) {
+            return deleteFromSFTP(account, filename);
+        } else {
+            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        }
+    }
+    
+    private boolean deleteFromFTP(FTPAccount account, String filename) {
+        FTPClient ftpClient = new FTPClient();
+        
+        try {
+            ftpClient.connect(account.getHost(), account.getPort());
+            ftpClient.login(account.getUsername(), account.getPassword());
+            
+            return ftpClient.deleteFile(filename);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("FTP silme hatası: " + e.getMessage());
+        } finally {
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                // Ignore
+            }
+        }
+    }
+    
+    private boolean deleteFromSFTP(FTPAccount account, String filename) {
+        JSch jsch = new JSch();
+        Session session = null;
+        ChannelSftp sftpChannel = null;
+        
+        try {
+            session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
+            session.setPassword(account.getPassword());
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            
+            sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+            
+            sftpChannel.rm(filename);
+            return true;
+            
+        } catch (JSchException | SftpException e) {
+            throw new RuntimeException("SFTP silme hatası: " + e.getMessage());
+        } finally {
+            if (sftpChannel != null) {
+                sftpChannel.disconnect();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
+        }
+    }
+    
+    // File Info class
+    public static class FileInfo {
+        private String name;
+        private long size;
+        private boolean isDirectory;
+        private long lastModified;
+        
+        // Getters and Setters
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        
+        public long getSize() { return size; }
+        public void setSize(long size) { this.size = size; }
+        
+        public boolean isDirectory() { return isDirectory; }
+        public void setDirectory(boolean directory) { isDirectory = directory; }
+        
+        public long getLastModified() { return lastModified; }
+        public void setLastModified(long lastModified) { this.lastModified = lastModified; }
     }
 }

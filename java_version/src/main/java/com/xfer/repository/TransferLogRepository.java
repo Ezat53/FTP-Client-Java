@@ -31,4 +31,13 @@ public interface TransferLogRepository extends JpaRepository<TransferLog, Long> 
     
     @Query("SELECT COUNT(tl) FROM TransferLog tl WHERE tl.userId = :userId AND tl.status = 'error'")
     Long countFailedTransfersByUserId(@Param("userId") Long userId);
+    
+    @Query(value = "SELECT * FROM transfer_logs ORDER BY created_at DESC LIMIT :limit", nativeQuery = true)
+    List<TransferLog> findTopByOrderByCreatedAtDesc(@Param("limit") int limit);
+    
+    @Query("SELECT COUNT(tl) FROM TransferLog tl WHERE tl.status = :status")
+    Long countByStatus(@Param("status") String status);
+    
+    @Query(value = "SELECT * FROM transfer_logs WHERE action = :action ORDER BY created_at DESC LIMIT :limit", nativeQuery = true)
+    List<TransferLog> findByActionOrderByCreatedAtDesc(@Param("action") String action, @Param("limit") int limit);
 }
