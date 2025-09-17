@@ -95,6 +95,13 @@
                                 <button class="btn btn-sm btn-success" th:if="${currentUser.role == 'admin' or (assignment != null and assignment.canUpload)}" onclick="showUploadModal()">
                                     <i class="fas fa-upload me-1"></i>Dosya Yükle
                                 </button>
+                                <!-- Debug info -->
+                                <small class="text-muted ms-2" th:if="${assignment != null}">
+                                    İzinler: Okuma=<span th:text="${assignment.canRead}">true</span>, 
+                                    Yazma=<span th:text="${assignment.canWrite}">false</span>, 
+                                    Silme=<span th:text="${assignment.canDelete}">false</span>, 
+                                    Yükleme=<span th:text="${assignment.canUpload}">false</span>
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -125,7 +132,7 @@
                                         <td th:text="${file.lastModified > 0 ? #dates.format(new java.util.Date(file.lastModified), 'dd.MM.yyyy HH:mm') : 'Bilinmiyor'}">17.09.2025 15:30</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name})}" class="btn btn-outline-primary">
+                                                <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name}, path=${currentPath})}" class="btn btn-outline-primary">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 <button class="btn btn-outline-danger" th:if="${!file.directory and (currentUser.role == 'admin' or (assignment != null and assignment.canDelete))}" th:data-filename="${file.name}" onclick="deleteFile(this.dataset.filename)">
@@ -215,7 +222,7 @@
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
                 const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
                 
-                fetch('/xfer-ftp-web-service/api/delete/' + [[${account.id}]] + '/' + filename, {
+                fetch('/xfer-ftp-web-service/api/delete/' + [[${account.id}]] + '/' + filename + '?path=' + encodeURIComponent('[[${currentPath}]]'), {
                     method: 'DELETE',
                     headers: {
                         [header]: token

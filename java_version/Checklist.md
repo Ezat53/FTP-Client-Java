@@ -1,7 +1,3 @@
-- Dosya silme ve indirme butonları düzgün çalışmıyor indirmeye tıkladığımda aynı dosya adında br dosya iniyor ama içi boş oluyor silme işlemi yaptığımda silinemedi hatası alıyorum muhtemelen buda bir path sorunu
-- FTP hesabı atanan biri varsa silinmiyor error.log dosyasında detaylı hata logu mevcut
-- FTP güncelleme alanında kullanıcıların izinlerini güncelleme alanı yok
-- FTP güncelleme alanında bir ftp deki tüm atamaları kaldıramıyorum checklist olduğu için biri seçili kalıyor mutlaka
-- Dashboarddaki log alanı düzgün çalışıyor ama admin paneldeki log alanı sabıt ve veriler güncellenmiyor.
-- Bugünki trasnferler ve toplam boyutta sabit değerler almış
-- Kullanıcıya okuma yazma silme yükleme yetkisi tanımlasakta sadece indirme butonu görüyor yükleme ve silme butonu göremiyor
+- FTP güncelleme alanında yeni kullanıcı atanınca herhangi bir değişiklik olmuyor eski kullanıcıyı seçmesemde ilk ftp hesabı oluştururken atadığım kullanıcıda kalıyor yeni atama yaptığım ona atanmıyor
+- FTP hesabında bir atama varken hala silinmiyor
+- Bir hesap tüm izinlere sahip olsa bile browse sayfasında bunları görüyorum zinler: Okuma=false, Yazma=false, Silme=false, Yükleme=false

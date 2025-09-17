@@ -112,16 +112,46 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="assigned_users" class="form-label">Atanacak Kullanıcılar</label>
-                                <select class="form-select" id="assigned_users" name="userIds" multiple>
-                                    <option th:each="user : ${users}" 
-                                            th:value="${user.id}" 
-                                            th:text="${user.username}"
-                                            th:selected="${assignedUserIds != null and assignedUserIds.contains(user.id)}">
-                                        Kullanıcı
-                                    </option>
-                                </select>
-                                <div class="form-text">Birden fazla kullanıcı seçmek için Ctrl tuşunu basılı tutun.</div>
+                                <label class="form-label">Kullanıcı Atamaları ve İzinleri</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div th:each="user : ${users}" class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input user-checkbox" type="checkbox" th:id="'user_' + ${user.id}" th:value="${user.id}" name="userIds">
+                                                <label class="form-check-label fw-bold" th:for="'user_' + ${user.id}" th:text="${user.username}">Kullanıcı</label>
+                                            </div>
+                                            
+                                            <div class="ms-4 mt-2">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'read_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="read">
+                                                            <label class="form-check-label" th:for="'read_' + ${user.id}">Okuma</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'write_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="write">
+                                                            <label class="form-check-label" th:for="'write_' + ${user.id}">Yazma</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'delete_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="delete">
+                                                            <label class="form-check-label" th:for="'delete_' + ${user.id}">Silme</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input permission-checkbox" type="checkbox" th:id="'upload_' + ${user.id}" th:name="'permissions_' + ${user.id}" value="upload">
+                                                            <label class="form-check-label" th:for="'upload_' + ${user.id}">Yükleme</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="d-flex justify-content-between">
@@ -140,5 +170,60 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load existing assignments and permissions
+            const assignments = /*[[${assignments}]]*/ [];
+            assignments.forEach(function(assignment) {
+                const userId = assignment.userId;
+                const userCheckbox = document.getElementById('user_' + userId);
+                if (userCheckbox) {
+                    userCheckbox.checked = true;
+                    
+                    // Set permissions
+                    if (assignment.canRead) {
+                        document.getElementById('read_' + userId).checked = true;
+                    }
+                    if (assignment.canWrite) {
+                        document.getElementById('write_' + userId).checked = true;
+                    }
+                    if (assignment.canDelete) {
+                        document.getElementById('delete_' + userId).checked = true;
+                    }
+                    if (assignment.canUpload) {
+                        document.getElementById('upload_' + userId).checked = true;
+                    }
+                }
+            });
+            
+            // Handle user checkbox changes
+            document.querySelectorAll('.user-checkbox').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const userId = this.value;
+                    const permissionCheckboxes = document.querySelectorAll(`input[name^="permissions_${userId}"]`);
+                    
+                    permissionCheckboxes.forEach(function(permissionCheckbox) {
+                        permissionCheckbox.disabled = !checkbox.checked;
+                        if (!checkbox.checked) {
+                            permissionCheckbox.checked = false;
+                        } else if (permissionCheckbox.value === 'read') {
+                            permissionCheckbox.checked = true; // Read permission is always checked when user is selected
+                        }
+                    });
+                });
+            });
+            
+            // Initialize permission checkboxes state
+            document.querySelectorAll('.user-checkbox').forEach(function(checkbox) {
+                if (!checkbox.checked) {
+                    const userId = checkbox.value;
+                    const permissionCheckboxes = document.querySelectorAll(`input[name^="permissions_${userId}"]`);
+                    permissionCheckboxes.forEach(function(permissionCheckbox) {
+                        permissionCheckbox.disabled = true;
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

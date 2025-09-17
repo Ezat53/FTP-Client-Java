@@ -40,4 +40,10 @@ public interface TransferLogRepository extends JpaRepository<TransferLog, Long> 
     
     @Query(value = "SELECT * FROM transfer_logs WHERE action = :action ORDER BY created_at DESC LIMIT :limit", nativeQuery = true)
     List<TransferLog> findByActionOrderByCreatedAtDesc(@Param("action") String action, @Param("limit") int limit);
+    
+    @Query("SELECT COUNT(tl) FROM TransferLog tl WHERE tl.createdAt BETWEEN :startDate AND :endDate")
+    Long countByCreatedAtBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    
+    @Query("SELECT COALESCE(SUM(tl.fileSize), 0) FROM TransferLog tl WHERE tl.status = :status")
+    Long sumFileSizeByStatus(@Param("status") String status);
 }

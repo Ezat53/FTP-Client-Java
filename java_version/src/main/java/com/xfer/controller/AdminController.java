@@ -2,7 +2,6 @@ package com.xfer.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -54,9 +53,21 @@ public class AdminController {
         // Get all users
         List<User> allUsers = authService.getAllUsers();
         
+        // Get recent transfer logs
+        List<com.xfer.entity.TransferLog> recentLogs = transferService.getRecentTransferLogs(20);
+        
+        // Get transfer statistics
+        long totalTransfers = transferService.getTotalTransferCount();
+        long todayTransfers = transferService.getTodayTransferCount();
+        long totalSize = transferService.getTotalTransferSize();
+        
         model.addAttribute("ftpAccounts", allAccounts);
         model.addAttribute("users", allUsers);
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("recentLogs", recentLogs);
+        model.addAttribute("totalTransfers", totalTransfers);
+        model.addAttribute("todayTransfers", todayTransfers);
+        model.addAttribute("totalSize", totalSize);
         
         return "admin";
     }
@@ -134,14 +145,11 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
         List<User> users = authService.getAllUsers();
-        List<User> assignedUsers = ftpService.getAccountAssignments(id);
-        List<Long> assignedUserIds = assignedUsers.stream()
-                .map(User::getId)
-                .collect(Collectors.toList());
+        List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(id);
         
         model.addAttribute("account", account);
         model.addAttribute("users", users);
-        model.addAttribute("assignedUserIds", assignedUserIds);
+        model.addAttribute("assignments", assignments);
         
         return "admin_edit_ftp";
     }
@@ -149,9 +157,10 @@ public class AdminController {
     @PostMapping("/edit-ftp/{id}")
     public String editFTP(@PathVariable Long id, @RequestParam Map<String, String> params,
                          @RequestParam(value = "userIds", required = false) List<Long> userIds,
-                         RedirectAttributes redirectAttributes) {
+                         Authentication authentication, RedirectAttributes redirectAttributes) {
         
         try {
+            User currentUser = (User) authentication.getPrincipal();
             String name = params.get("name");
             String protocol = params.get("protocol");
             String host = params.get("host");
@@ -159,7 +168,33 @@ public class AdminController {
             String username = params.get("username");
             String password = params.get("password");
             
-            ftpService.updateAccount(id, name, protocol, host, port, username, password, userIds);
+            // Update account basic info
+            ftpService.updateAccount(id, name, protocol, host, port, username, password, null);
+            
+            // Update user assignments with permissions
+            if (userIds != null && !userIds.isEmpty()) {
+                // Delete existing assignments
+                ftpUserAssignmentRepository.deleteByFtpAccountId(id);
+                
+                // Create new assignments with permissions
+                for (Long userId : userIds) {
+                    // Get permissions for this user
+                    Boolean canRead = params.get("permissions_" + userId + "_read") != null;
+                    Boolean canWrite = params.get("permissions_" + userId + "_write") != null;
+                    Boolean canDelete = params.get("permissions_" + userId + "_delete") != null;
+                    Boolean canUpload = params.get("permissions_" + userId + "_upload") != null;
+                    
+                    // Create assignment with permissions
+                    FTPUserAssignment assignment = new FTPUserAssignment(
+                        id, userId, currentUser.getId(),
+                        canRead, canWrite, canDelete, canUpload
+                    );
+                    ftpUserAssignmentRepository.save(assignment);
+                }
+            } else {
+                // Remove all assignments if no users selected
+                ftpUserAssignmentRepository.deleteByFtpAccountId(id);
+            }
             
             redirectAttributes.addFlashAttribute("success", "FTP hesabı başarıyla güncellendi");
             return "redirect:/admin";

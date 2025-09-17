@@ -51,6 +51,24 @@ public class TransferService {
         return transferLogRepository.findTopByOrderByCreatedAtDesc(limit);
     }
     
+    public List<TransferLog> getRecentTransferLogs(int limit) {
+        return transferLogRepository.findTopByOrderByCreatedAtDesc(limit);
+    }
+    
+    public long getTotalTransferCount() {
+        return transferLogRepository.count();
+    }
+    
+    public long getTodayTransferCount() {
+        LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        return transferLogRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+    }
+    
+    public long getTotalTransferSize() {
+        return transferLogRepository.sumFileSizeByStatus("success");
+    }
+    
     public TransferStats getTransferStats() {
         long totalTransfers = transferLogRepository.count();
         long successfulTransfers = transferLogRepository.countByStatus("success");

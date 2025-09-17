@@ -142,18 +142,25 @@ public class FTPService {
                 return false;
             }
             
-            // Delete related assignments first (ignore if already deleted)
+            // Delete related assignments first using native query to avoid Hibernate issues
             try {
-                List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountId(accountId);
-                if (!assignments.isEmpty()) {
-                    ftpUserAssignmentRepository.deleteAll(assignments);
-                    System.out.println("Deleted " + assignments.size() + " assignments for FTP account " + accountId);
-                } else {
-                    System.out.println("No assignments found for FTP account " + accountId);
-                }
+                ftpUserAssignmentRepository.deleteByFtpAccountId(accountId);
+                System.out.println("Deleted assignments for FTP account " + accountId);
             } catch (Exception e) {
                 System.out.println("Warning: Could not delete assignments for FTP account " + accountId + ": " + e.getMessage());
-                // Continue with account deletion even if assignments deletion fails
+                // Try individual deletion as fallback
+                try {
+                    List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountId(accountId);
+                    for (FTPUserAssignment assignment : assignments) {
+                        try {
+                            ftpUserAssignmentRepository.delete(assignment);
+                        } catch (Exception ex) {
+                            System.out.println("Could not delete assignment " + assignment.getId() + ": " + ex.getMessage());
+                        }
+                    }
+                } catch (Exception ex2) {
+                    System.out.println("Fallback assignment deletion also failed: " + ex2.getMessage());
+                }
             }
             
             // Delete the account
@@ -611,19 +618,27 @@ public class FTPService {
     }
     
     public byte[] downloadFile(Long accountId, String filename) {
+        return downloadFile(accountId, filename, null);
+    }
+    
+    public byte[] downloadFile(Long accountId, String filename, String path) {
         FTPAccount account = getAccountById(accountId)
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
         if ("ftp".equals(account.getProtocol())) {
-            return downloadFromFTP(account, filename);
+            return downloadFromFTP(account, filename, path);
         } else if ("sftp".equals(account.getProtocol())) {
-            return downloadFromSFTP(account, filename);
+            return downloadFromSFTP(account, filename, path);
         } else {
             throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
         }
     }
     
     private byte[] downloadFromFTP(FTPAccount account, String filename) {
+        return downloadFromFTP(account, filename, null);
+    }
+    
+    private byte[] downloadFromFTP(FTPAccount account, String filename, String path) {
         FTPClient ftpClient = new FTPClient();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         
@@ -632,6 +647,25 @@ public class FTPService {
             ftpClient.login(account.getUsername(), account.getPassword());
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            
+            // Change to the target directory if specified
+            if (path != null && !path.trim().isEmpty() && !path.equals("/")) {
+                System.out.println("Changing to download path: " + path);
+                boolean changed = ftpClient.changeWorkingDirectory(path);
+                if (changed) {
+                    System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
+                } else {
+                    System.out.println("Failed to change to download path: " + path);
+                }
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty() && !account.getRemotePath().equals("/")) {
+                System.out.println("Changing to account remote path: " + account.getRemotePath());
+                boolean changed = ftpClient.changeWorkingDirectory(account.getRemotePath());
+                if (changed) {
+                    System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
+                } else {
+                    System.out.println("Failed to change to account remote path: " + account.getRemotePath());
+                }
+            }
             
             ftpClient.retrieveFile(filename, outputStream);
             return outputStream.toByteArray();
@@ -648,6 +682,10 @@ public class FTPService {
     }
     
     private byte[] downloadFromSFTP(FTPAccount account, String filename) {
+        return downloadFromSFTP(account, filename, null);
+    }
+    
+    private byte[] downloadFromSFTP(FTPAccount account, String filename, String path) {
         JSch jsch = new JSch();
         Session session = null;
         ChannelSftp sftpChannel = null;
@@ -660,6 +698,25 @@ public class FTPService {
             
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
+            
+            // Change to the target directory if specified
+            if (path != null && !path.trim().isEmpty() && !path.equals("/")) {
+                System.out.println("Changing to download path: " + path);
+                try {
+                    sftpChannel.cd(path);
+                    System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                } catch (SftpException e) {
+                    System.out.println("Failed to change to download path: " + path + " - " + e.getMessage());
+                }
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty() && !account.getRemotePath().equals("/")) {
+                System.out.println("Changing to account remote path: " + account.getRemotePath());
+                try {
+                    sftpChannel.cd(account.getRemotePath());
+                    System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                } catch (SftpException e) {
+                    System.out.println("Failed to change to account remote path: " + account.getRemotePath() + " - " + e.getMessage());
+                }
+            }
             
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             sftpChannel.get(filename, outputStream);
@@ -678,24 +735,51 @@ public class FTPService {
     }
     
     public boolean deleteFile(Long accountId, String filename) {
+        return deleteFile(accountId, filename, null);
+    }
+    
+    public boolean deleteFile(Long accountId, String filename, String path) {
         FTPAccount account = getAccountById(accountId)
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
         if ("ftp".equals(account.getProtocol())) {
-            return deleteFromFTP(account, filename);
+            return deleteFromFTP(account, filename, path);
         } else if ("sftp".equals(account.getProtocol())) {
-            return deleteFromSFTP(account, filename);
+            return deleteFromSFTP(account, filename, path);
         } else {
             throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
         }
     }
     
     private boolean deleteFromFTP(FTPAccount account, String filename) {
+        return deleteFromFTP(account, filename, null);
+    }
+    
+    private boolean deleteFromFTP(FTPAccount account, String filename, String path) {
         FTPClient ftpClient = new FTPClient();
         
         try {
             ftpClient.connect(account.getHost(), account.getPort());
             ftpClient.login(account.getUsername(), account.getPassword());
+            
+            // Change to the target directory if specified
+            if (path != null && !path.trim().isEmpty() && !path.equals("/")) {
+                System.out.println("Changing to delete path: " + path);
+                boolean changed = ftpClient.changeWorkingDirectory(path);
+                if (changed) {
+                    System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
+                } else {
+                    System.out.println("Failed to change to delete path: " + path);
+                }
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty() && !account.getRemotePath().equals("/")) {
+                System.out.println("Changing to account remote path: " + account.getRemotePath());
+                boolean changed = ftpClient.changeWorkingDirectory(account.getRemotePath());
+                if (changed) {
+                    System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
+                } else {
+                    System.out.println("Failed to change to account remote path: " + account.getRemotePath());
+                }
+            }
             
             return ftpClient.deleteFile(filename);
             
@@ -711,6 +795,10 @@ public class FTPService {
     }
     
     private boolean deleteFromSFTP(FTPAccount account, String filename) {
+        return deleteFromSFTP(account, filename, null);
+    }
+    
+    private boolean deleteFromSFTP(FTPAccount account, String filename, String path) {
         JSch jsch = new JSch();
         Session session = null;
         ChannelSftp sftpChannel = null;
@@ -723,6 +811,25 @@ public class FTPService {
             
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
+            
+            // Change to the target directory if specified
+            if (path != null && !path.trim().isEmpty() && !path.equals("/")) {
+                System.out.println("Changing to delete path: " + path);
+                try {
+                    sftpChannel.cd(path);
+                    System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                } catch (SftpException e) {
+                    System.out.println("Failed to change to delete path: " + path + " - " + e.getMessage());
+                }
+            } else if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty() && !account.getRemotePath().equals("/")) {
+                System.out.println("Changing to account remote path: " + account.getRemotePath());
+                try {
+                    sftpChannel.cd(account.getRemotePath());
+                    System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                } catch (SftpException e) {
+                    System.out.println("Failed to change to account remote path: " + account.getRemotePath() + " - " + e.getMessage());
+                }
+            }
             
             sftpChannel.rm(filename);
             return true;

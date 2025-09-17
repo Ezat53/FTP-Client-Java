@@ -125,6 +125,7 @@ public class FTPController {
     public ResponseEntity<Resource> downloadFile(
             @PathVariable Long accountId,
             @PathVariable String filename,
+            @RequestParam(value = "path", required = false) String path,
             Authentication authentication) {
         
         User currentUser = (User) authentication.getPrincipal();
@@ -142,7 +143,7 @@ public class FTPController {
             
             FTPAccount account = accountOpt.get();
             
-            byte[] fileData = ftpService.downloadFile(accountId, filename);
+            byte[] fileData = ftpService.downloadFile(accountId, filename, path);
             
             // Log the transfer
             transferService.logTransfer(currentUser.getId(), accountId, "download", 
@@ -168,6 +169,7 @@ public class FTPController {
     public ResponseEntity<Map<String, Object>> deleteFile(
             @PathVariable Long accountId,
             @PathVariable String filename,
+            @RequestParam(value = "path", required = false) String path,
             Authentication authentication) {
         
         Map<String, Object> response = new HashMap<>();
@@ -197,7 +199,7 @@ public class FTPController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            boolean success = ftpService.deleteFile(accountId, filename);
+            boolean success = ftpService.deleteFile(accountId, filename, path);
             
             if (success) {
                 transferService.logTransfer(currentUser.getId(), accountId, "delete", 
