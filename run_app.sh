@@ -6,6 +6,9 @@
 # Script'in bulunduğu dizini al
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# GLIBC 2.38 portable ile Python'u çalıştır
+export LD_LIBRARY_PATH="$SCRIPT_DIR/glibc-2.38/lib:$LD_LIBRARY_PATH"
+
 # Portable Python yolunu ayarla
 PYTHON_PATH="$SCRIPT_DIR/python311/bin/python3"
 PIP_PATH="$SCRIPT_DIR/python311/bin/pip3"
