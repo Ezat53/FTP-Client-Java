@@ -65,6 +65,8 @@ public class DashboardController {
             com.xfer.entity.FTPAccount account = ftpService.getAccountById(accountId)
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
+            System.out.println("Browse request - Account ID: " + accountId + ", Path: " + path);
+            
             // Get files list
             List<FTPService.FileInfo> files = ftpService.listFiles(accountId, path);
             

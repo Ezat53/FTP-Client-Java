@@ -188,7 +188,7 @@
             const form = document.getElementById('uploadForm');
             const formData = new FormData(form);
             
-            fetch('/api/upload/' + [[${account.id}]], {
+            fetch('/xfer-ftp-web-service/api/upload/' + [[${account.id}]], {
                 method: 'POST',
                 body: formData
             })
@@ -204,7 +204,7 @@
         
         function deleteFile(filename) {
             if (confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) {
-                fetch('/api/delete/' + [[${account.id}]] + '/' + filename, {
+                fetch('/xfer-ftp-web-service/api/delete/' + [[${account.id}]] + '/' + filename, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
@@ -221,7 +221,7 @@
         function navigateToDirectory(dirName) {
             const currentPath = new URLSearchParams(window.location.search).get('path') || '';
             const newPath = currentPath ? currentPath + '/' + dirName : dirName;
-            window.location.href = '/dashboard/browse/' + [[${account.id}]] + '?path=' + encodeURIComponent(newPath);
+            window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + [[${account.id}]] + '?path=' + encodeURIComponent(newPath);
         }
         
         function goBack() {
@@ -230,7 +230,7 @@
                 const pathParts = currentPath.split('/');
                 pathParts.pop(); // Remove last directory
                 const newPath = pathParts.join('/');
-                window.location.href = '/dashboard/browse/' + [[${account.id}]] + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
+                window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + [[${account.id}]] + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
             }
         }
         
