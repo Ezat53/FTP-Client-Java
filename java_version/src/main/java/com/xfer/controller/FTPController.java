@@ -56,6 +56,10 @@ public class FTPController {
             }
             
             // Check if user has upload permission
+            System.out.println("Upload - User role: " + currentUser.getRole());
+            System.out.println("Upload - Is admin: " + "admin".equals(currentUser.getRole()));
+            System.out.println("Upload - Has permission: " + ftpService.hasUserPermission(accountId, currentUser.getId(), "upload"));
+            
             if (!"admin".equals(currentUser.getRole()) && !ftpService.hasUserPermission(accountId, currentUser.getId(), "upload")) {
                 response.put("success", false);
                 response.put("message", "Dosya yükleme yetkiniz yok.");
@@ -176,6 +180,10 @@ public class FTPController {
         User currentUser = (User) authentication.getPrincipal();
         
         // Check if user has delete permission
+        System.out.println("User role: " + currentUser.getRole());
+        System.out.println("Is admin: " + "admin".equals(currentUser.getRole()));
+        System.out.println("Has permission: " + ftpService.hasUserPermission(accountId, currentUser.getId(), "delete"));
+        
         if (!"admin".equals(currentUser.getRole()) && !ftpService.hasUserPermission(accountId, currentUser.getId(), "delete")) {
             response.put("success", false);
             response.put("message", "Dosya silme yetkiniz yok.");
