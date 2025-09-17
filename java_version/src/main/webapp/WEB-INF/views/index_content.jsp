@@ -1,0 +1,52 @@
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="text-center mb-5">
+            <div class="gradient-bg rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+                <i class="fas fa-cloud-upload-alt fa-3x text-white"></i>
+            </div>
+            <h1 class="display-4 fw-bold text-primary mb-3">Xfer</h1>
+            <p class="lead text-muted mb-4">FTP ve SFTP dosya transferi için güvenli ve kolay kullanımlı web arayüzü</p>
+            <a href="<c:url value='/login'/>" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+            </a>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="gradient-bg rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-shield-alt fa-2x text-white"></i>
+                        </div>
+                        <h5 class="card-title">Güvenli Transfer</h5>
+                        <p class="card-text text-muted">FTP ve SFTP protokolleri ile güvenli dosya transferi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="gradient-bg rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-users fa-2x text-white"></i>
+                        </div>
+                        <h5 class="card-title">Kullanıcı Yönetimi</h5>
+                        <p class="card-text text-muted">Admin paneli ile kullanıcı ve hesap yönetimi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="gradient-bg rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-chart-line fa-2x text-white"></i>
+                        </div>
+                        <h5 class="card-title">Aktivite Takibi</h5>
+                        <p class="card-text text-muted">Detaylı transfer logları ve aktivite takibi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
