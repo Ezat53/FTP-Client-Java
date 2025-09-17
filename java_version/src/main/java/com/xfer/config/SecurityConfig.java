@@ -1,9 +1,9 @@
 package com.xfer.config;
 
-import com.xfer.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,12 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+import com.xfer.repository.UserRepository;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
-    private AuthService authService;
+    private UserRepository userRepository;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -56,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(username -> {
             try {
-                return authService.getUserByUsername(username);
+                return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
             } catch (Exception e) {
                 throw new RuntimeException("Kullanıcı bulunamadı", e);
             }
@@ -64,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     @Bean
+    @Primary
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
