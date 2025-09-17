@@ -8,17 +8,6 @@
     <display-name>Xfer FTP Web Service</display-name>
     <description>FTP/SFTP Client Web Application</description>
 
-    <!-- Spring Boot configuration -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>com.xfer.FtpClientApplication</param-value>
-    </context-param>
-
-    <!-- Spring Boot listener -->
-    <listener>
-        <listener-class>org.springframework.boot.web.servlet.support.SpringBootServletInitializer</listener-class>
-    </listener>
-
     <!-- Character encoding filter -->
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
@@ -61,27 +50,5 @@
             <secure>false</secure>
         </cookie-config>
     </session-config>
-
-    <!-- Security constraints -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Protected Resources</web-resource-name>
-            <url-pattern>/admin/*</url-pattern>
-            <url-pattern>/api/*</url-pattern>
-            <url-pattern>/dashboard/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>ADMIN</role-name>
-            <role-name>USER</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <!-- Security roles -->
-    <security-role>
-        <role-name>ADMIN</role-name>
-    </security-role>
-    <security-role>
-        <role-name>USER</role-name>
-    </security-role>
 
 </web-app>
