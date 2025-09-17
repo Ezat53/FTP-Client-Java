@@ -1,2 +1,7 @@
--Ftp hesabı eklerken dizin belirtilmediğinde browse alanında dosya girilen dizine yüklenmiyor ama dizin belirtildiğinde yükleniyor 
--Eğer browse sayfasında bir ftp içine girilirse herhangi bir linke gidilmeye çalışıldığında template hatası alıyorum
+- Dosya silme ve indirme butonları düzgün çalışmıyor indirmeye tıkladığımda aynı dosya adında br dosya iniyor ama içi boş oluyor silme işlemi yaptığımda silinemedi hatası alıyorum muhtemelen buda bir path sorunu
+- FTP hesabı atanan biri varsa silinmiyor error.log dosyasında detaylı hata logu mevcut
+- FTP güncelleme alanında kullanıcıların izinlerini güncelleme alanı yok
+- FTP güncelleme alanında bir ftp deki tüm atamaları kaldıramıyorum checklist olduğu için biri seçili kalıyor mutlaka
+- Dashboarddaki log alanı düzgün çalışıyor ama admin paneldeki log alanı sabıt ve veriler güncellenmiyor.
+- Bugünki trasnferler ve toplam boyutta sabit değerler almış
+- Kullanıcıya okuma yazma silme yükleme yetkisi tanımlasakta sadece indirme butonu görüyor yükleme ve silme butonu göremiyor
