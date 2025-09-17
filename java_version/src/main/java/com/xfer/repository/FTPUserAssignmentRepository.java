@@ -1,12 +1,13 @@
 package com.xfer.repository;
 
-import com.xfer.entity.FTPUserAssignment;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.xfer.entity.FTPUserAssignment;
 
 @Repository
 public interface FTPUserAssignmentRepository extends JpaRepository<FTPUserAssignment, Long> {
@@ -18,6 +19,8 @@ public interface FTPUserAssignmentRepository extends JpaRepository<FTPUserAssign
     FTPUserAssignment findByFtpAccountIdAndUserId(Long ftpAccountId, Long userId);
     
     void deleteByFtpAccountId(Long ftpAccountId);
+    
+    void deleteByUserId(Long userId);
     
     void deleteByFtpAccountIdAndUserId(Long ftpAccountId, Long userId);
     

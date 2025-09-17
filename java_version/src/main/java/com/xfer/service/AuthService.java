@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xfer.entity.User;
+import com.xfer.repository.FTPUserAssignmentRepository;
 import com.xfer.repository.UserRepository;
 
 @Service
@@ -17,6 +18,9 @@ public class AuthService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private FTPUserAssignmentRepository ftpUserAssignmentRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -75,6 +79,10 @@ public class AuthService {
     
     public boolean deleteUser(Long userId) {
         try {
+            // Delete user assignments first
+            ftpUserAssignmentRepository.deleteByUserId(userId);
+            
+            // Delete the user
             userRepository.deleteById(userId);
             return true;
         } catch (Exception e) {

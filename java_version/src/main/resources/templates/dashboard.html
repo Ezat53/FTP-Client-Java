@@ -84,13 +84,16 @@
                     </div>
                     <div class="card-body">
                         <div th:if="${ftpAccounts != null and !ftpAccounts.empty}" class="list-group list-group-flush">
-                            <div th:each="account : ${ftpAccounts}" class="list-group-item d-flex justify-content-between align-items-center">
+                            <a th:each="account : ${ftpAccounts}" th:href="@{/dashboard/browse/{id}(id=${account.id})}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center hover-lift">
                                 <div>
                                     <h6 class="mb-1" th:text="${account.name}">FTP Account</h6>
-                                    <small class="text-muted" th:text="${account.host}">host:port</small>
+                                    <small class="text-muted" th:text="${account.host} + ':' + ${account.port}">host:port</small>
                                 </div>
-                                <span class="badge bg-success">Aktif</span>
-                            </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info me-2" th:text="${account.protocol}">FTP</span>
+                                    <span class="badge bg-success">Aktif</span>
+                                </div>
+                            </a>
                         </div>
                         <div th:if="${ftpAccounts == null or ftpAccounts.empty}" class="text-center text-muted">
                             <i class="fas fa-server fa-3x mb-3"></i>
