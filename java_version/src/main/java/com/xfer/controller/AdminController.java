@@ -148,13 +148,18 @@ public class AdminController {
     @PostMapping("/delete-ftp/{id}")
     public String deleteFTP(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            System.out.println("Deleting FTP account with ID: " + id);
             boolean success = ftpService.deleteAccount(id);
             if (success) {
+                System.out.println("FTP account deleted successfully");
                 redirectAttributes.addFlashAttribute("success", "FTP hesabı başarıyla silindi");
             } else {
+                System.out.println("Failed to delete FTP account");
                 redirectAttributes.addFlashAttribute("error", "FTP hesabı silinirken hata oluştu");
             }
         } catch (Exception e) {
+            System.out.println("Exception while deleting FTP account: " + e.getMessage());
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "FTP hesabı silinirken hata: " + e.getMessage());
         }
         

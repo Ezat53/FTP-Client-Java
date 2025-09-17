@@ -136,13 +136,33 @@ public class FTPService {
     
     public boolean deleteAccount(Long accountId) {
         try {
-            // Delete related assignments first
-            ftpUserAssignmentRepository.deleteByFtpAccountId(accountId);
+            // Check if account exists
+            if (!ftpAccountRepository.existsById(accountId)) {
+                System.out.println("FTP account with ID " + accountId + " does not exist");
+                return false;
+            }
+            
+            // Delete related assignments first (ignore if already deleted)
+            try {
+                List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountId(accountId);
+                if (!assignments.isEmpty()) {
+                    ftpUserAssignmentRepository.deleteAll(assignments);
+                    System.out.println("Deleted " + assignments.size() + " assignments for FTP account " + accountId);
+                } else {
+                    System.out.println("No assignments found for FTP account " + accountId);
+                }
+            } catch (Exception e) {
+                System.out.println("Warning: Could not delete assignments for FTP account " + accountId + ": " + e.getMessage());
+                // Continue with account deletion even if assignments deletion fails
+            }
             
             // Delete the account
             ftpAccountRepository.deleteById(accountId);
+            System.out.println("Successfully deleted FTP account " + accountId);
             return true;
         } catch (Exception e) {
+            System.out.println("Error deleting FTP account " + accountId + ": " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -155,15 +175,23 @@ public class FTPService {
     
     // File Operations
     public List<FileInfo> listFiles(Long accountId) {
-        FTPAccount account = getAccountById(accountId)
-                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
-        
-        if ("ftp".equals(account.getProtocol())) {
-            return listFTPFiles(account);
-        } else if ("sftp".equals(account.getProtocol())) {
-            return listSFTPFiles(account);
-        } else {
-            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        try {
+            FTPAccount account = getAccountById(accountId)
+                    .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+            
+            System.out.println("Listing files for account: " + account.getName() + " (" + account.getProtocol() + ")");
+            
+            if ("ftp".equals(account.getProtocol())) {
+                return listFTPFiles(account);
+            } else if ("sftp".equals(account.getProtocol())) {
+                return listSFTPFiles(account);
+            } else {
+                throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+            }
+        } catch (Exception e) {
+            System.out.println("Error listing files for account " + accountId + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Dosya listesi alınırken hata: " + e.getMessage());
         }
     }
     
@@ -172,27 +200,50 @@ public class FTPService {
         FTPClient ftpClient = new FTPClient();
         
         try {
+            System.out.println("Connecting to FTP: " + account.getHost() + ":" + account.getPort());
             ftpClient.connect(account.getHost(), account.getPort());
-            ftpClient.login(account.getUsername(), account.getPassword());
-            ftpClient.enterLocalPassiveMode();
             
-            FTPFile[] ftpFiles = ftpClient.listFiles();
-            for (FTPFile ftpFile : ftpFiles) {
-                FileInfo fileInfo = new FileInfo();
-                fileInfo.setName(ftpFile.getName());
-                fileInfo.setSize(ftpFile.getSize());
-                fileInfo.setDirectory(ftpFile.isDirectory());
-                fileInfo.setLastModified(ftpFile.getTimestamp() != null ? ftpFile.getTimestamp().getTimeInMillis() : 0L);
-                files.add(fileInfo);
+            if (!ftpClient.isConnected()) {
+                throw new RuntimeException("FTP sunucusuna bağlanılamadı");
             }
             
+            System.out.println("Logging in with username: " + account.getUsername());
+            boolean loginSuccess = ftpClient.login(account.getUsername(), account.getPassword());
+            if (!loginSuccess) {
+                throw new RuntimeException("FTP girişi başarısız. Kullanıcı adı veya şifre hatalı olabilir.");
+            }
+            
+            ftpClient.enterLocalPassiveMode();
+            System.out.println("Retrieving file list...");
+            
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            if (ftpFiles != null) {
+                for (FTPFile ftpFile : ftpFiles) {
+                    if (ftpFile != null && ftpFile.getName() != null && !ftpFile.getName().equals(".") && !ftpFile.getName().equals("..")) {
+                        FileInfo fileInfo = new FileInfo();
+                        fileInfo.setName(ftpFile.getName());
+                        fileInfo.setSize(ftpFile.getSize() > 0 ? ftpFile.getSize() : 0);
+                        fileInfo.setDirectory(ftpFile.isDirectory());
+                        fileInfo.setLastModified(ftpFile.getTimestamp() != null ? ftpFile.getTimestamp().getTimeInMillis() : 0L);
+                        files.add(fileInfo);
+                    }
+                }
+            }
+            
+            System.out.println("Retrieved " + files.size() + " files");
+            
         } catch (Exception e) {
+            System.out.println("FTP connection error: " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("FTP dosya listesi alınırken hata: " + e.getMessage());
         } finally {
             try {
-                ftpClient.disconnect();
+                if (ftpClient.isConnected()) {
+                    ftpClient.disconnect();
+                    System.out.println("FTP connection closed");
+                }
             } catch (IOException e) {
-                // Ignore
+                System.out.println("Warning: Error closing FTP connection: " + e.getMessage());
             }
         }
         

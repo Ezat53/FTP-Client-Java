@@ -106,7 +106,7 @@
                                             <span th:text="${file.name}">dosya.txt</span>
                                         </td>
                                         <td th:text="${#numbers.formatDecimal(file.size / 1024.0, 1, 1) + ' KB'}">1.2 KB</td>
-                                        <td th:text="${#temporals.format(#temporals.createInstant(file.lastModified), 'dd.MM.yyyy HH:mm')}">17.09.2025 15:30</td>
+                                        <td th:text="${file.lastModified > 0 ? #dates.format(new java.util.Date(file.lastModified), 'dd.MM.yyyy HH:mm') : 'Bilinmiyor'}">17.09.2025 15:30</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name})}" class="btn btn-outline-primary">
