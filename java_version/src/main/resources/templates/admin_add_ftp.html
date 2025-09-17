@@ -36,9 +36,13 @@
                         <i class="fas fa-user me-1"></i>Admin
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/logout" th:href="@{/logout}">
-                            <i class="fas fa-sign-out-alt me-1"></i>Çıkış Yap
-                        </a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" style="display: inline;">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Çıkış Yap
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -113,7 +117,7 @@
                             
                             <div class="mb-3">
                                 <label for="assigned_users" class="form-label">Atanacak Kullanıcılar</label>
-                                <select class="form-select" id="assigned_users" name="assigned_users" multiple>
+                                <select class="form-select" id="assigned_users" name="userIds" multiple>
                                     <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}">Kullanıcı</option>
                                 </select>
                                 <div class="form-text">Birden fazla kullanıcı seçmek için Ctrl tuşunu basılı tutun.</div>
