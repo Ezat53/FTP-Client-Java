@@ -1,7 +1,16 @@
 package com.xfer.entity;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "ftp_user_assignments")
@@ -23,6 +32,18 @@ public class FTPUserAssignment {
     @Column(name = "assigned_at")
     private LocalDateTime assignedAt = LocalDateTime.now();
     
+    @Column(name = "can_read", nullable = false)
+    private Boolean canRead = true;
+    
+    @Column(name = "can_write", nullable = false)
+    private Boolean canWrite = false;
+    
+    @Column(name = "can_delete", nullable = false)
+    private Boolean canDelete = false;
+    
+    @Column(name = "can_upload", nullable = false)
+    private Boolean canUpload = false;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ftp_account_id", insertable = false, updatable = false)
     private FTPAccount ftpAccount;
@@ -42,6 +63,17 @@ public class FTPUserAssignment {
         this.ftpAccountId = ftpAccountId;
         this.userId = userId;
         this.assignedBy = assignedBy;
+    }
+    
+    public FTPUserAssignment(Long ftpAccountId, Long userId, Long assignedBy, 
+                           Boolean canRead, Boolean canWrite, Boolean canDelete, Boolean canUpload) {
+        this.ftpAccountId = ftpAccountId;
+        this.userId = userId;
+        this.assignedBy = assignedBy;
+        this.canRead = canRead;
+        this.canWrite = canWrite;
+        this.canDelete = canDelete;
+        this.canUpload = canUpload;
     }
     
     // Getters and Setters
@@ -107,6 +139,38 @@ public class FTPUserAssignment {
     
     public void setAssignedByUser(User assignedByUser) {
         this.assignedByUser = assignedByUser;
+    }
+    
+    public Boolean getCanRead() {
+        return canRead;
+    }
+    
+    public void setCanRead(Boolean canRead) {
+        this.canRead = canRead;
+    }
+    
+    public Boolean getCanWrite() {
+        return canWrite;
+    }
+    
+    public void setCanWrite(Boolean canWrite) {
+        this.canWrite = canWrite;
+    }
+    
+    public Boolean getCanDelete() {
+        return canDelete;
+    }
+    
+    public void setCanDelete(Boolean canDelete) {
+        this.canDelete = canDelete;
+    }
+    
+    public Boolean getCanUpload() {
+        return canUpload;
+    }
+    
+    public void setCanUpload(Boolean canUpload) {
+        this.canUpload = canUpload;
     }
     
     @Override

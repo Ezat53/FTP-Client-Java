@@ -1,9 +1,22 @@
 package com.xfer.entity;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "ftp_accounts")
@@ -30,6 +43,9 @@ public class FTPAccount {
     
     @Column(length = 255)
     private String password;
+    
+    @Column(name = "remote_path", length = 500)
+    private String remotePath = "/";
     
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
@@ -63,6 +79,19 @@ public class FTPAccount {
         this.port = port;
         this.username = username;
         this.password = password;
+        this.ownerId = ownerId;
+        this.remotePath = "/";
+    }
+    
+    public FTPAccount(String name, String protocol, String host, Integer port, 
+                     String username, String password, String remotePath, Long ownerId) {
+        this.name = name;
+        this.protocol = protocol;
+        this.host = host;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        this.remotePath = remotePath != null ? remotePath : "/";
         this.ownerId = ownerId;
     }
     
@@ -121,6 +150,14 @@ public class FTPAccount {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getRemotePath() {
+        return remotePath;
+    }
+    
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath != null ? remotePath : "/";
     }
     
     public Long getOwnerId() {

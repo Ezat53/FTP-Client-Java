@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.xfer.entity.FTPUserAssignment;
 import com.xfer.entity.User;
+import com.xfer.repository.FTPUserAssignmentRepository;
 import com.xfer.service.FTPService;
 import com.xfer.service.TransferService;
 
@@ -21,6 +23,9 @@ public class DashboardController {
     
     @Autowired
     private FTPService ftpService;
+    
+    @Autowired
+    private FTPUserAssignmentRepository ftpUserAssignmentRepository;
     
     @Autowired
     private TransferService transferService;
@@ -70,8 +75,17 @@ public class DashboardController {
             // Get files list
             List<FTPService.FileInfo> files = ftpService.listFiles(accountId, path);
             
+            // Get user's assignment for this account
+            List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
+            FTPUserAssignment userAssignment = assignments.stream()
+                    .filter(assignment -> assignment.getUserId().equals(currentUser.getId()))
+                    .findFirst()
+                    .orElse(null);
+            
             model.addAttribute("account", account);
             model.addAttribute("files", files);
+            model.addAttribute("currentUser", currentUser);
+            model.addAttribute("assignment", userAssignment);
             
             return "browse";
             

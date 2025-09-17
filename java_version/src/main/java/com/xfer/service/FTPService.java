@@ -40,8 +40,8 @@ public class FTPService {
     private UserRepository userRepository;
     
     public FTPAccount createAccount(String name, String protocol, String host, Integer port,
-                                  String username, String password, Long ownerId, List<Long> userIds) {
-        FTPAccount account = new FTPAccount(name, protocol, host, port, username, password, ownerId);
+                                  String username, String password, String remotePath, Long ownerId, List<Long> userIds) {
+        FTPAccount account = new FTPAccount(name, protocol, host, port, username, password, remotePath, ownerId);
         account = ftpAccountRepository.save(account);
         
         if (userIds != null && !userIds.isEmpty()) {
@@ -171,6 +171,26 @@ public class FTPService {
         List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
         return assignments.stream()
                 .anyMatch(assignment -> assignment.getUserId().equals(userId));
+    }
+    
+    public boolean hasUserPermission(Long accountId, Long userId, String permission) {
+        List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(accountId);
+        return assignments.stream()
+                .filter(assignment -> assignment.getUserId().equals(userId))
+                .anyMatch(assignment -> {
+                    switch (permission.toLowerCase()) {
+                        case "read":
+                            return assignment.getCanRead() != null && assignment.getCanRead();
+                        case "write":
+                            return assignment.getCanWrite() != null && assignment.getCanWrite();
+                        case "delete":
+                            return assignment.getCanDelete() != null && assignment.getCanDelete();
+                        case "upload":
+                            return assignment.getCanUpload() != null && assignment.getCanUpload();
+                        default:
+                            return false;
+                    }
+                });
     }
     
     // File Operations
@@ -317,15 +337,23 @@ public class FTPService {
     }
     
     public boolean uploadFile(Long accountId, MultipartFile file) {
-        FTPAccount account = getAccountById(accountId)
-                .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
-        
-        if ("ftp".equals(account.getProtocol())) {
-            return uploadToFTP(account, file);
-        } else if ("sftp".equals(account.getProtocol())) {
-            return uploadToSFTP(account, file);
-        } else {
-            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+        try {
+            FTPAccount account = getAccountById(accountId)
+                    .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+            
+            System.out.println("Uploading file: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes) to " + account.getProtocol() + "://" + account.getHost());
+            
+            if ("ftp".equals(account.getProtocol())) {
+                return uploadToFTP(account, file);
+            } else if ("sftp".equals(account.getProtocol())) {
+                return uploadToSFTP(account, file);
+            } else {
+                throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+            }
+        } catch (Exception e) {
+            System.out.println("Error in uploadFile: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
     
@@ -333,20 +361,149 @@ public class FTPService {
         FTPClient ftpClient = new FTPClient();
         
         try {
+            System.out.println("Connecting to FTP: " + account.getHost() + ":" + account.getPort());
             ftpClient.connect(account.getHost(), account.getPort());
-            ftpClient.login(account.getUsername(), account.getPassword());
+            
+            if (!ftpClient.isConnected()) {
+                System.out.println("Failed to connect to FTP server");
+                return false;
+            }
+            
+            System.out.println("Logging in with username: " + account.getUsername());
+            boolean loginSuccess = ftpClient.login(account.getUsername(), account.getPassword());
+            if (!loginSuccess) {
+                System.out.println("FTP login failed");
+                return false;
+            }
+            
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             
-            return ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
+            // Check if we can write to the directory
+            System.out.println("Current working directory: " + ftpClient.printWorkingDirectory());
+            System.out.println("FTP server type: " + ftpClient.getSystemType());
+            
+            // Change to the remote path if specified
+            System.out.println("Account remote path: '" + account.getRemotePath() + "'");
+            if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
+                String remotePath = account.getRemotePath().trim();
+                System.out.println("Processing remote path: '" + remotePath + "'");
+                if (!remotePath.equals("/")) {
+                    System.out.println("Changing to remote path: " + remotePath);
+                    boolean changed = ftpClient.changeWorkingDirectory(remotePath);
+                    if (changed) {
+                        System.out.println("Successfully changed to: " + ftpClient.printWorkingDirectory());
+                    } else {
+                        System.out.println("Failed to change to remote path: " + remotePath);
+                        System.out.println("FTP reply: " + ftpClient.getReplyString());
+                        // Try to create the directory
+                        System.out.println("Attempting to create directory: " + remotePath);
+                        boolean created = ftpClient.makeDirectory(remotePath);
+                        if (created) {
+                            System.out.println("Directory created successfully");
+                            ftpClient.changeWorkingDirectory(remotePath);
+                        } else {
+                            System.out.println("Failed to create directory: " + ftpClient.getReplyString());
+                        }
+                    }
+                } else {
+                    System.out.println("Remote path is root (/), staying in current directory");
+                }
+            } else {
+                System.out.println("No remote path specified, staying in current directory");
+            }
+            
+            
+            // Clean filename for FTP
+            String filename = file.getOriginalFilename();
+            if (filename == null || filename.trim().isEmpty()) {
+                filename = "uploaded_file_" + System.currentTimeMillis();
+            }
+            
+            // Remove any problematic characters
+            filename = filename.replaceAll("[^a-zA-Z0-9._-]", "_");
+            
+            // If filename starts with a number, prefix with 'file_'
+            if (filename.matches("^[0-9].*")) {
+                filename = "file_" + filename;
+            }
+            
+            // Ensure filename doesn't start with special characters
+            if (filename.startsWith(".") || filename.startsWith("-")) {
+                filename = "file_" + filename;
+            }
+            
+            System.out.println("Uploading file: " + filename + " (original: " + file.getOriginalFilename() + ")");
+            
+            // Try different filename variations if the first one fails
+            String[] filenameVariations = {
+                filename,
+                "upload_" + filename,
+                "file_" + filename,
+                filename.replace(".", "_") + ".xls",
+                "document_" + System.currentTimeMillis() + ".xls"
+            };
+            
+            boolean uploadSuccess = false;
+            String successfulFilename = null;
+            
+            for (String testFilename : filenameVariations) {
+                System.out.println("Trying filename: " + testFilename);
+                uploadSuccess = ftpClient.storeFile(testFilename, file.getInputStream());
+                System.out.println("Upload result for '" + testFilename + "': " + uploadSuccess);
+                
+                if (uploadSuccess) {
+                    successfulFilename = testFilename;
+                    break;
+                } else {
+                    // Get FTP reply details
+                    int replyCode = ftpClient.getReplyCode();
+                    String replyString = ftpClient.getReplyString();
+                    System.out.println("FTP storeFile failed. Reply code: " + replyCode);
+                    System.out.println("FTP reply string: " + replyString);
+                    
+                    // Reset input stream for next attempt
+                    try {
+                        file.getInputStream().reset();
+                    } catch (Exception e) {
+                        System.out.println("Could not reset input stream, trying with new stream");
+                    }
+                }
+            }
+            
+            if (uploadSuccess) {
+                System.out.println("Successfully uploaded as: " + successfulFilename);
+            } else {
+                System.out.println("All filename variations failed");
+            }
+            
+            if (!uploadSuccess) {
+                System.out.println("FTP storeFile failed. Reply code: " + ftpClient.getReplyCode());
+                System.out.println("FTP reply string: " + ftpClient.getReplyString());
+                
+                // Check if we can write to the directory
+                System.out.println("Current working directory: " + ftpClient.printWorkingDirectory());
+                System.out.println("Directory listing:");
+                FTPFile[] files = ftpClient.listFiles();
+                for (FTPFile f : files) {
+                    System.out.println("  " + f.getName() + " (" + f.getSize() + " bytes)");
+                }
+            }
+            
+            return uploadSuccess;
             
         } catch (Exception e) {
-            throw new RuntimeException("FTP yükleme hatası: " + e.getMessage());
+            System.out.println("FTP upload error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         } finally {
             try {
-                ftpClient.disconnect();
+                if (ftpClient.isConnected()) {
+                    ftpClient.disconnect();
+                    System.out.println("FTP connection closed");
+                }
             } catch (IOException e) {
-                // Ignore
+                System.out.println("Error closing FTP connection: " + e.getMessage());
             }
         }
     }
@@ -365,7 +522,50 @@ public class FTPService {
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
             
-            sftpChannel.put(file.getInputStream(), file.getOriginalFilename());
+            // Change to the remote path if specified
+            if (account.getRemotePath() != null && !account.getRemotePath().trim().isEmpty()) {
+                String remotePath = account.getRemotePath().trim();
+                if (!remotePath.equals("/")) {
+                    System.out.println("Changing to remote path: " + remotePath);
+                    try {
+                        sftpChannel.cd(remotePath);
+                        System.out.println("Successfully changed to: " + sftpChannel.pwd());
+                    } catch (SftpException e) {
+                        System.out.println("Failed to change to remote path: " + remotePath + " - " + e.getMessage());
+                        // Try to create the directory
+                        try {
+                            System.out.println("Attempting to create directory: " + remotePath);
+                            sftpChannel.mkdir(remotePath);
+                            sftpChannel.cd(remotePath);
+                            System.out.println("Directory created and changed successfully");
+                        } catch (SftpException e2) {
+                            System.out.println("Failed to create directory: " + e2.getMessage());
+                        }
+                    }
+                }
+            }
+            
+            // Clean filename for SFTP
+            String filename = file.getOriginalFilename();
+            if (filename == null || filename.trim().isEmpty()) {
+                filename = "uploaded_file_" + System.currentTimeMillis();
+            }
+            
+            // Remove any problematic characters
+            filename = filename.replaceAll("[^a-zA-Z0-9._-]", "_");
+            
+            // If filename starts with a number, prefix with 'file_'
+            if (filename.matches("^[0-9].*")) {
+                filename = "file_" + filename;
+            }
+            
+            // Ensure filename doesn't start with special characters
+            if (filename.startsWith(".") || filename.startsWith("-")) {
+                filename = "file_" + filename;
+            }
+            
+            System.out.println("Uploading file: " + filename + " (original: " + file.getOriginalFilename() + ")");
+            sftpChannel.put(file.getInputStream(), filename);
             return true;
             
         } catch (JSchException | SftpException | IOException e) {

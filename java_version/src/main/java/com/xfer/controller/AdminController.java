@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xfer.entity.FTPAccount;
+import com.xfer.entity.FTPUserAssignment;
 import com.xfer.entity.User;
+import com.xfer.repository.FTPUserAssignmentRepository;
 import com.xfer.service.AuthService;
 import com.xfer.service.FTPService;
 import com.xfer.service.TransferService;
@@ -27,6 +29,9 @@ public class AdminController {
     
     @Autowired
     private FTPService ftpService;
+    
+    @Autowired
+    private FTPUserAssignmentRepository ftpUserAssignmentRepository;
     
     @Autowired
     private AuthService authService;
@@ -90,9 +95,29 @@ public class AdminController {
             Integer port = Integer.parseInt(params.get("port"));
             String username = params.get("username");
             String password = params.get("password");
+            String remotePath = params.get("remote_path");
             
+            // Create account first
             FTPAccount account = ftpService.createAccount(name, protocol, host, port, 
-                    username, password, currentUser.getId(), userIds);
+                    username, password, remotePath, currentUser.getId(), null);
+            
+            // Process user assignments with permissions
+            if (userIds != null && !userIds.isEmpty()) {
+                for (Long userId : userIds) {
+                    // Get permissions for this user
+                    Boolean canRead = params.get("permissions_" + userId + "_read") != null;
+                    Boolean canWrite = params.get("permissions_" + userId + "_write") != null;
+                    Boolean canDelete = params.get("permissions_" + userId + "_delete") != null;
+                    Boolean canUpload = params.get("permissions_" + userId + "_upload") != null;
+                    
+                    // Create assignment with permissions
+                    FTPUserAssignment assignment = new FTPUserAssignment(
+                        account.getId(), userId, currentUser.getId(),
+                        canRead, canWrite, canDelete, canUpload
+                    );
+                    ftpUserAssignmentRepository.save(assignment);
+                }
+            }
             
             redirectAttributes.addFlashAttribute("success", "FTP hesabı başarıyla oluşturuldu");
             return "redirect:/admin";

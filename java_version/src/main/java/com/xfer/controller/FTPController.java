@@ -1,8 +1,5 @@
 package com.xfer.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +37,6 @@ public class FTPController {
     @Autowired
     private TransferService transferService;
     
-    private static final String UPLOAD_DIR = "uploads";
-    
     @PostMapping("/upload/{accountId}")
     public ResponseEntity<Map<String, Object>> uploadFile(
             @PathVariable Long accountId,
@@ -56,6 +51,13 @@ public class FTPController {
             if (!ftpService.hasUserAccess(accountId, currentUser.getId())) {
                 response.put("success", false);
                 response.put("message", "Bu hesaba erişim yetkiniz yok");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Check if user has upload permission
+            if (!"admin".equals(currentUser.getRole()) && !ftpService.hasUserPermission(accountId, currentUser.getId(), "upload")) {
+                response.put("success", false);
+                response.put("message", "Dosya yükleme yetkiniz yok.");
                 return ResponseEntity.badRequest().body(response);
             }
             
@@ -81,42 +83,33 @@ public class FTPController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            // Create upload directory if it doesn't exist
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            
-            // Save file temporarily
+            // Upload directly to FTP/SFTP server
             String filename = file.getOriginalFilename();
-            Path filePath = uploadPath.resolve(filename);
-            file.transferTo(filePath.toFile());
+            System.out.println("Starting upload for file: " + filename + " to account: " + accountId);
             
-            try {
-                // Upload to FTP/SFTP server
-                boolean success = ftpService.uploadFile(accountId, file);
+            boolean success = ftpService.uploadFile(accountId, file);
+            
+            if (success) {
+                System.out.println("Upload successful for file: " + filename);
+                // Log the transfer
+                transferService.logTransfer(currentUser.getId(), accountId, "upload", 
+                        filename, file.getSize(), "success", null);
                 
-                if (success) {
-                    // Log the transfer
-                    transferService.logTransfer(currentUser.getId(), accountId, "upload", 
-                            filename, file.getSize(), "success", null);
-                    
-                    response.put("success", true);
-                    response.put("message", "Dosya başarıyla yüklendi");
-                } else {
-                    transferService.logTransfer(currentUser.getId(), accountId, "upload", 
-                            filename, 0L, "error", "Yükleme başarısız");
-                    
-                    response.put("success", false);
-                    response.put("message", "Dosya yüklenirken hata oluştu");
-                }
+                response.put("success", true);
+                response.put("message", "Dosya başarıyla yüklendi");
+            } else {
+                System.out.println("Upload failed for file: " + filename);
+                transferService.logTransfer(currentUser.getId(), accountId, "upload", 
+                        filename, 0L, "error", "Yükleme başarısız");
                 
-            } finally {
-                // Clean up local file
-                Files.deleteIfExists(filePath);
+                response.put("success", false);
+                response.put("message", "Dosya yüklenirken hata oluştu");
             }
             
         } catch (Exception e) {
+            System.out.println("Upload exception for file: " + file.getOriginalFilename() + " - " + e.getMessage());
+            e.printStackTrace();
+            
             transferService.logTransfer(currentUser.getId(), accountId, "upload", 
                     file.getOriginalFilename(), 0L, "error", e.getMessage());
             
@@ -179,10 +172,10 @@ public class FTPController {
         Map<String, Object> response = new HashMap<>();
         User currentUser = (User) authentication.getPrincipal();
         
-        // Only admin users can delete files
-        if (!"admin".equals(currentUser.getRole())) {
+        // Check if user has delete permission
+        if (!"admin".equals(currentUser.getRole()) && !ftpService.hasUserPermission(accountId, currentUser.getId(), "delete")) {
             response.put("success", false);
-            response.put("message", "Dosya silme yetkiniz yok. Sadece admin kullanıcıları dosya silebilir.");
+            response.put("message", "Dosya silme yetkiniz yok.");
             return ResponseEntity.badRequest().body(response);
         }
         
