@@ -33,8 +33,8 @@
                                                 <div class="form-group mb-3">
                                                     <label class="form-label"><strong>JDBC URL:</strong></label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" value="jdbc:h2:file:./data/ftp_manager" readonly>
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('jdbc:h2:file:./data/ftp_manager', this)">
+                                                        <input type="text" class="form-control" th:value="${jdbcUrl}" readonly>
+                                                        <button class="btn btn-outline-secondary" type="button" th:data-value="${jdbcUrl}" onclick="copyToClipboard(this.dataset.value, this)">
                                                             <i class="fas fa-copy"></i>
                                                         </button>
                                                     </div>
@@ -44,10 +44,10 @@
                                                 <div class="form-group mb-3">
                                                     <label class="form-label"><strong>Username:</strong></label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" value="sa" readonly>
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('sa', this)">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
+                                                    <input type="text" class="form-control" th:value="${username}" readonly>
+                                                    <button class="btn btn-outline-secondary" type="button" th:data-value="${username}" onclick="copyToClipboard(this.dataset.value, this)">
+                                                        <i class="fas fa-copy"></i>
+                                                    </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -56,8 +56,8 @@
                                         <div class="form-group mb-3">
                                             <label class="form-label"><strong>Password:</strong></label>
                                             <div class="input-group">
-                                                <input type="password" class="form-control" value="admin123" readonly id="passwordField">
-                                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('admin123', this)">
+                                                <input type="password" class="form-control" th:value="${password}" readonly id="passwordField">
+                                                <button class="btn btn-outline-secondary" type="button" th:data-value="${password}" onclick="copyToClipboard(this.dataset.value, this)">
                                                     <i class="fas fa-copy"></i>
                                                 </button>
                                             </div>

@@ -39,7 +39,7 @@
 ## 🔐 2. KİMLİK DOĞRULAMA VE GÜVENLİK TESTLERİ
 
 ### 2.1 Giriş İşlemleri
-- [x] Varsayılan admin hesabı ile giriş (`admin` / `admin123`)
+- [x] Varsayılan admin hesabı ile giriş (`admin` / `c[R0bJN$$&\r#G&)xSk1L%b`)
 - [x] Yanlış kullanıcı adı ile giriş denemesi (hata mesajı)
 - [x] Yanlış şifre ile giriş denemesi (hata mesajı)
 - [x] Boş alanlarla giriş denemesi (validasyon hatası)
@@ -389,7 +389,7 @@
 
 ### Temel Akış Testi (5 dakika)
 1. Uygulamayı aç
-2. Admin olarak giriş yap (`admin` / `admin123`)
+2. Admin olarak giriş yap (`admin` / `c[R0bJN$$&\r#G&)xSk1L%b`)
 3. Yeni FTP hesabı ekle
 4. Dashboard'a git
 5. FTP hesabına gözat

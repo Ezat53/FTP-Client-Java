@@ -69,7 +69,7 @@ public class AuthService {
     
     public void initializeAdminUser() {
         if (!userRepository.existsByUsername("admin")) {
-            createUser("admin", "admin123", "admin");
+            createUser("admin", "c[R0bJN$$&\r#G&)xSk1L%b", "admin");
         }
     }
     

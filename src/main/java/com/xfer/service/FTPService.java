@@ -10,6 +10,7 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,9 +40,25 @@ public class FTPService {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    // Simple encryption/decryption for FTP passwords
+    private String encryptPassword(String password) {
+        // Simple base64 encoding - in production use proper encryption like AES
+        return java.util.Base64.getEncoder().encodeToString(password.getBytes());
+    }
+    
+    private String decryptPassword(String encryptedPassword) {
+        // Simple base64 decoding - in production use proper decryption
+        return new String(java.util.Base64.getDecoder().decode(encryptedPassword));
+    }
+    
     public FTPAccount createAccount(String name, String protocol, String host, Integer port,
                                   String username, String password, String remotePath, Long ownerId, List<Long> userIds) {
-        FTPAccount account = new FTPAccount(name, protocol, host, port, username, password, remotePath, ownerId);
+        // Encrypt the password before storing
+        String encryptedPassword = encryptPassword(password);
+        FTPAccount account = new FTPAccount(name, protocol, host, port, username, encryptedPassword, remotePath, ownerId);
         account = ftpAccountRepository.save(account);
         
         if (userIds != null && !userIds.isEmpty()) {
@@ -119,7 +136,9 @@ public class FTPService {
         account.setPort(port);
         account.setUsername(username);
         if (password != null && !password.trim().isEmpty()) {
-            account.setPassword(password);
+            // Encrypt the password before storing
+            String encryptedPassword = encryptPassword(password);
+            account.setPassword(encryptedPassword);
         }
         
         // Update user assignments if provided
@@ -246,7 +265,8 @@ public class FTPService {
             }
             
             System.out.println("Logging in with username: " + account.getUsername());
-            boolean loginSuccess = ftpClient.login(account.getUsername(), account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            boolean loginSuccess = ftpClient.login(account.getUsername(), decryptedPassword);
             if (!loginSuccess) {
                 throw new RuntimeException("FTP girişi başarısız. Kullanıcı adı veya şifre hatalı olabilir.");
             }
@@ -308,7 +328,8 @@ public class FTPService {
         
         try {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
-            session.setPassword(account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            session.setPassword(decryptedPassword);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
             
@@ -385,7 +406,8 @@ public class FTPService {
             }
             
             System.out.println("Logging in with username: " + account.getUsername());
-            boolean loginSuccess = ftpClient.login(account.getUsername(), account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            boolean loginSuccess = ftpClient.login(account.getUsername(), decryptedPassword);
             if (!loginSuccess) {
                 System.out.println("FTP login failed");
                 return false;
@@ -540,7 +562,8 @@ public class FTPService {
         
         try {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
-            session.setPassword(account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            session.setPassword(decryptedPassword);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
             
@@ -692,7 +715,8 @@ public class FTPService {
         
         try {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
-            session.setPassword(account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            session.setPassword(decryptedPassword);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
             
@@ -805,7 +829,8 @@ public class FTPService {
         
         try {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
-            session.setPassword(account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            session.setPassword(decryptedPassword);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
             

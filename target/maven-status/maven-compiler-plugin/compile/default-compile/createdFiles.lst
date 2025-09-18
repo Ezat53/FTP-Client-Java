@@ -11,6 +11,7 @@ com\xfer\repository\TransferLogRepository.class
 com\xfer\entity\FTPAccount.class
 com\xfer\service\InitializationService.class
 com\xfer\service\AuthService.class
+com\xfer\controller\DatabaseController.class
 com\xfer\FtpClientApplication.class
 com\xfer\repository\FTPUserAssignmentRepository.class
 com\xfer\entity\FTPUserAssignment.class
