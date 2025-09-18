@@ -120,14 +120,27 @@ function setLoading(element, loading) {
     }
 }
 
+// Get CSRF token
+function getCSRFToken() {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    return { token, header };
+}
+
 // AJAX helper
 function makeRequest(url, options = {}) {
+    const csrf = getCSRFToken();
     const defaultOptions = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     };
+    
+    // Add CSRF token to headers
+    if (csrf.token && csrf.header) {
+        defaultOptions.headers[csrf.header] = csrf.token;
+    }
     
     const config = { ...defaultOptions, ...options };
     
@@ -146,14 +159,27 @@ function makeRequest(url, options = {}) {
 }
 
 // File operations
-function uploadFile(accountId, file) {
+function uploadFile(accountId, file, path = null) {
     const formData = new FormData();
     formData.append('file', file);
     
-        return makeRequest(`/xfer-ftp-web-service/api/upload/${accountId}`, {
+    // Add path parameter if provided
+    if (path) {
+        formData.append('path', path);
+    }
+    
+    const csrf = getCSRFToken();
+    const headers = {};
+    
+    // Add CSRF token to headers
+    if (csrf.token && csrf.header) {
+        headers[csrf.header] = csrf.token;
+    }
+    
+    return makeRequest(`/xfer-ftp-web-service/api/upload/${accountId}`, {
         method: 'POST',
         body: formData,
-        headers: {} // Let browser set Content-Type for FormData
+        headers: headers // Let browser set Content-Type for FormData
     });
 }
 
@@ -161,8 +187,9 @@ function downloadFile(accountId, filename) {
     window.open(`/xfer-ftp-web-service/api/download/${accountId}/${filename}`, '_blank');
 }
 
-function deleteFile(accountId, filename) {
-    return makeRequest(`/xfer-ftp-web-service/api/delete/${accountId}/${filename}`, {
+function deleteFile(accountId, filename, path = null) {
+    const pathParam = path ? `?path=${encodeURIComponent(path)}` : '';
+    return makeRequest(`/xfer-ftp-web-service/api/delete/${accountId}/${encodeURIComponent(filename)}${pathParam}`, {
         method: 'DELETE'
     });
 }
@@ -194,79 +221,10 @@ function deleteUser(userId) {
 
 // File browser functionality
 function browseFiles(accountId) {
-    const modal = new bootstrap.Modal(document.getElementById('fileBrowserModal'));
-    modal.show();
-    
-    // Show loading state
-    const fileList = document.getElementById('fileList');
-    fileList.innerHTML = `
-        <div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Yükleniyor...</span>
-            </div>
-            <p class="mt-2">Dosyalar yükleniyor...</p>
-        </div>
-    `;
-    
-    listFiles(accountId)
-        .then(response => {
-            if (response.success) {
-                displayFiles(response.files, accountId);
-            } else {
-                fileList.innerHTML = `<div class="alert alert-danger">${response.message}</div>`;
-            }
-        })
-        .catch(error => {
-            fileList.innerHTML = '<div class="alert alert-danger">Dosyalar yüklenirken hata oluştu</div>';
-        });
+    // Redirect to browse page instead of showing modal
+    window.location.href = `/xfer-ftp-web-service/dashboard/browse/${accountId}`;
 }
 
-function displayFiles(files, accountId) {
-    const fileList = document.getElementById('fileList');
-    
-    if (files.length === 0) {
-        fileList.innerHTML = `
-            <div class="text-center py-4">
-                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Klasör boş</h5>
-                <p class="text-muted">Bu klasörde henüz dosya yok</p>
-            </div>
-        `;
-        return;
-    }
-    
-    let html = '<div class="row">';
-    files.forEach(file => {
-        const fileIcon = getFileIcon(file);
-        html += `
-            <div class="col-md-4 mb-3">
-                <div class="card hover-lift">
-                    <div class="card-body text-center">
-                        <i class="${fileIcon} fa-2x text-primary mb-2"></i>
-                        <h6 class="card-title text-truncate" title="${file}">${file}</h6>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="downloadFile(${accountId}, '${file}')" title="İndir">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    html += '</div>';
-    
-    // Add upload button
-    html += `
-        <div class="text-center mt-4">
-            <button class="btn btn-primary" onclick="showUploadDialog(${accountId})">
-                <i class="fas fa-upload me-2"></i>Dosya Yükle
-            </button>
-        </div>
-    `;
-    
-    fileList.innerHTML = html;
-}
 
 function getFileIcon(filename) {
     const extension = filename.split('.').pop().toLowerCase();
@@ -306,31 +264,6 @@ function getFileIcon(filename) {
     return iconMap[extension] || 'fas fa-file';
 }
 
-function showUploadDialog(accountId) {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.txt,.pdf,.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.zip,.rar,.mp4,.avi,.mov,.mp3,.wav,.csv,.json,.xml,.html,.css,.js,.py,.java,.cpp,.c,.sql,.log';
-    
-    fileInput.onchange = function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            uploadFile(accountId, file)
-                .then(response => {
-                    if (response.success) {
-                        showAlert('Dosya başarıyla yüklendi', 'success');
-                        browseFiles(accountId); // Refresh file list
-                    } else {
-                        showAlert('Hata: ' + response.message, 'danger');
-                    }
-                })
-                .catch(error => {
-                    showAlert('Dosya yüklenirken hata oluştu', 'danger');
-                });
-        }
-    };
-    
-    fileInput.click();
-}
 
 // Utility functions
 function formatFileSize(bytes) {
@@ -364,4 +297,3 @@ window.listFiles = listFiles;
 window.browseFiles = browseFiles;
 window.deleteFTPAccount = deleteFTPAccount;
 window.deleteUser = deleteUser;
-window.showUploadDialog = showUploadDialog;

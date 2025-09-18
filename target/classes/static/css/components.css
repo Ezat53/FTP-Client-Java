@@ -269,3 +269,153 @@ footer {
     height: 2rem;
     border-width: 0.2em;
 }
+
+/* Theme Toggle - Sol tarafta pop-up gibi - DİKEY */
+.theme-toggle-container {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle {
+    position: relative;
+    width: 35px;
+    height: 70px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #4a5568;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    overflow: hidden;
+}
+
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    border-radius: 18px;
+    opacity: 0.6;
+}
+
+.theme-toggle:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+    border-color: #6b7280;
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    left: 50%;
+    top: 4px;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+}
+
+.theme-toggle.active .theme-toggle-slider {
+    top: 36px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.theme-toggle i {
+    font-size: 14px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    position: relative;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.theme-toggle #sunny {
+    color: #fbbf24;
+    opacity: 0;
+    transform: scale(0.8);
+    order: 1;
+}
+
+.theme-toggle #moon {
+    color: #e5e7eb;
+    opacity: 1;
+    transform: scale(1);
+    order: 2;
+}
+
+.theme-toggle.active #sunny {
+    opacity: 1;
+    transform: scale(1);
+    color: #f59e0b;
+    order: 1;
+}
+
+.theme-toggle.active #moon {
+    opacity: 0;
+    transform: scale(0.8);
+    order: 2;
+}
+
+/* Light theme için özel stiller */
+[data-theme="light"] .theme-toggle {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-toggle::before {
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.03) 0%, transparent 50%);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-color: #94a3b8;
+}
+
+/* Responsive - mobilde gizle */
+@media (max-width: 768px) {
+    .theme-toggle-container {
+        left: 10px;
+        top: auto;
+        bottom: 20px;
+        transform: none;
+    }
+    
+    .theme-toggle {
+        width: 30px;
+        height: 60px;
+        border-radius: 15px;
+    }
+    
+    .theme-toggle-slider {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .theme-toggle.active .theme-toggle-slider {
+        top: 30px;
+    }
+    
+    .theme-toggle i {
+        font-size: 12px;
+    }
+}
