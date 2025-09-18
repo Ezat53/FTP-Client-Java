@@ -38,8 +38,8 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="goBack()" id="backBtn" style="display: none;">
-                                    <i class="fas fa-arrow-left me-1"></i>Geri
+                                <button class="btn btn-sm btn-primary me-2" onclick="goBack()" id="backBtn" style="display: none;">
+                                    <i class="fas fa-arrow-left me-1"></i>Önceki Dizin
                                 </button>
                                 <h5 class="mb-0">
                                     <i class="fas fa-folder me-2"></i>Dosyalar
@@ -67,25 +67,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Parent Directory Row (..) - Only show if not in root directory -->
+                                   
+                                    
+                                    <!-- Regular Files and Directories -->
                                     <tr th:each="file : ${files}">
                                         <td>
-                                            <i class="fas fa-file me-2" th:class="${file.directory} ? 'fas fa-folder' : 'fas fa-file'"></i>
+                                            <i class="fas fa-file me-2" th:class="${file.directory} ? 'fas fa-folder text-warning' : 'fas fa-file text-muted'"></i>
                                             <span th:if="${file.directory}" 
                                                   th:data-dirname="${file.name}"
                                                   onclick="navigateToDirectory(this.dataset.dirname)" 
-                                                  style="cursor: pointer; color: #007bff;" 
+                                                  style="cursor: pointer; color: #007bff; font-weight: 500;" 
                                                   th:text="${file.name}">klasör</span>
                                             <span th:unless="${file.directory}" 
                                                   th:text="${file.name}">dosya.txt</span>
                                         </td>
-                                        <td th:text="${#numbers.formatDecimal(file.size / 1024.0, 1, 1) + ' KB'}">1.2 KB</td>
+                                        <td th:text="${file.directory ? '-' : (#numbers.formatDecimal(file.size / 1024.0, 1, 1) + ' KB')}">1.2 KB</td>
                                         <td th:text="${file.lastModified > 0 ? #dates.format(new java.util.Date(file.lastModified), 'dd.MM.yyyy HH:mm') : 'Bilinmiyor'}">17.09.2025 15:30</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name}, path=${currentPath})}" class="btn btn-outline-primary">
+                                                <a th:if="${!file.directory}" th:href="@{/api/download/{accountId}/{filename}(accountId=${account.id}, filename=${file.name}, path=${currentPath})}" class="btn btn-outline-primary" title="İndir">
                                                     <i class="fas fa-download"></i>
                                                 </a>
-                                                <button class="btn btn-outline-danger" th:if="${!file.directory and (currentUser.role == 'admin' or (assignment != null and assignment.canDelete))}" th:data-filename="${file.name}" onclick="deleteFileLocal(this.dataset.filename)">
+                                                <button class="btn btn-outline-danger" th:if="${!file.directory and (currentUser.role == 'admin' or (assignment != null and assignment.canDelete))}" th:data-filename="${file.name}" onclick="deleteFileLocal(this.dataset.filename)" title="Sil">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -264,7 +268,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const currentPath = new URLSearchParams(window.location.search).get('path');
                 const backBtn = document.getElementById('backBtn');
-                if (currentPath && backBtn) {
+                if (currentPath && currentPath !== '/' && currentPath !== '' && backBtn) {
                     backBtn.style.display = 'inline-block';
                 }
             });
