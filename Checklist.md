@@ -1,5 +1,6 @@
 Tasarımsal Güncellemeler
-- Menüye bir alan ekle dark ve light tema olarak değiştirikebilsin button olarak değilde tıklandoğında sağa sola hareket eden bir şey olmalı
-- Responsive ve daha etkileyici bir tasarım yap
-- Tasarım kullanıcı dostu olsun ve modern bir yapıda olsun
-- Footer en altta olmalı ve footer ile arada margin olmalı
+- Dark mode da table-responsive altındaki .table>:not(caption)>*>* buradaki background rengi beyaz kalıyor bg dark yazılar ve ikonlar beyaz olmalı
+
+-<button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" aria-selected="true" role="tab">
+                            <i class="fas fa-users me-2"></i>Kullanıcılar
+                        </button> dark modda bu alan ve diğer butonlar beyaz kalıyor dark olmalı yazıları light olmalı

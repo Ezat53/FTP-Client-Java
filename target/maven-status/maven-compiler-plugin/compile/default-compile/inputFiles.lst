@@ -1,22 +1,22 @@
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\AdminController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\FtpClientApplication.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\repository\FTPAccountRepository.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\entity\FTPAccount.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\repository\UserRepository.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\DashboardController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\config\WebConfig.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\service\TransferService.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\entity\TransferLog.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\service\FTPService.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\FTPController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\service\InitializationService.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\ApiController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\CustomErrorController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\repository\TransferLogRepository.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\repository\FTPUserAssignmentRepository.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\service\FTPOperationsService.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\entity\FTPUserAssignment.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\entity\User.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\config\SecurityConfig.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\controller\AuthController.java
-E:\FTP-Client\java_version\src\main\java\com\xfer\service\AuthService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\config\WebConfig.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\entity\FTPUserAssignment.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\FTPAccountRepository.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\TransferLogRepository.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\AuthController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\FtpClientApplication.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\TransferService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\FTPService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\entity\FTPAccount.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\UserRepository.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\AdminController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\entity\TransferLog.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\AuthService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\FTPController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\FTPUserAssignmentRepository.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\config\SecurityConfig.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\ApiController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\CustomErrorController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\InitializationService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\FTPOperationsService.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\DashboardController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\entity\User.java
