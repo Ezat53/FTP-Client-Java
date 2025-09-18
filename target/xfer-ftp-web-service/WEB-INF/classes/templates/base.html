@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle : 'Xfer'}">Xfer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+            --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .card {
+            background-color: var(--card-bg) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: var(--shadow) !important;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Theme Toggle Styles */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .theme-toggle.active {
+            background: #4CAF50;
+        }
+        
+        .theme-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .theme-toggle.active .theme-toggle-slider {
+            transform: translateX(30px);
+        }
+        
+        .theme-toggle i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle .fa-sun {
+            left: 8px;
+            opacity: 1;
+        }
+        
+        .theme-toggle .fa-moon {
+            right: 8px;
+            opacity: 0;
+        }
+        
+        .theme-toggle.active .fa-sun {
+            opacity: 0;
+        }
+        
+        .theme-toggle.active .fa-moon {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100" th:fragment="body">
+    <nav class="navbar navbar-expand-lg navbar-dark gradient-bg">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-cloud-upload-alt me-2"></i>Xfer
+            </a>
+            
+            <div th:if="${#authentication != null and #authentication.isAuthenticated()}">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/dashboard}">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item" th:if="${#authentication != null and #authentication.principal != null and #authentication.principal.role == 'admin'}">
+                            <a class="nav-link" th:href="@{/admin}">
+                                <i class="fas fa-cogs me-1"></i>Admin Panel
+                            </a>
+                        </li>
+                        <li class="nav-item" th:if="${#authentication != null and #authentication.principal != null and #authentication.principal.role == 'admin'}">
+                            <a class="nav-link" th:href="@{/admin/add-user}">
+                                <i class="fas fa-user-plus me-1"></i>Kullanıcı Ekle
+                            </a>
+                        </li>
+                        <li class="nav-item" th:if="${#authentication != null and #authentication.principal != null and #authentication.principal.role == 'admin'}">
+                            <a class="nav-link" th:href="@{/admin/add-ftp}">
+                                <i class="fas fa-server me-1"></i>FTP Hesabı Ekle
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item me-3">
+                            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                                <div class="theme-toggle-slider"></div>
+                                <i class="fas fa-sun"></i>
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i><span th:text="${#authentication != null and #authentication.principal != null ? #authentication.principal.username : 'User'}">User</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/logout" th:href="@{/logout}">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Çıkış Yap
+                                </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 fade-in flex-grow-1" th:fragment="content">
+        <!-- Content will be inserted here -->
+    </main>
+
+    <footer class="text-center py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>Xfer
+                    </h5>
+                    <p class="mb-0">Modern FTP/SFTP dosya yönetim sistemi</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="mb-3">Geliştirici</h6>
+                    <p class="mb-0">Bekir Koşif</p>
+                    <small class="text-muted">Full Stack Developer</small>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
+            <p class="mb-0">
+                &copy; 2025 Xfer. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.classList.add('active');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            body.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'light') {
+                themeToggle.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
