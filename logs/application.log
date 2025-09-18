@@ -2782,3 +2782,271 @@ Caused by: java.io.IOException: Cannot delete E:\TEMP\tomcat.8080.43838270431108
 2025-09-18 19:32:16.504 [http-nio-8080-exec-10] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
 2025-09-18 19:32:16.516 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 2025-09-18 19:32:16.516 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:32:49.811 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /admin
+2025-09-18 19:32:49.812 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:32:49.812 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:32:49.813 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /admin] with attributes [hasRole('ROLE_ADMIN')]
+2025-09-18 19:32:49.813 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /admin
+2025-09-18 19:32:49.813 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/admin", parameters={}
+2025-09-18 19:32:49.814 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AdminController#adminPanel(Model, Authentication)
+2025-09-18 19:32:49.839 [http-nio-8080-exec-1] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:32:49.855 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:32:49.855 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:32:54.885 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /admin/edit-ftp/1
+2025-09-18 19:32:54.886 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:32:54.886 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:32:54.887 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /admin/edit-ftp/1] with attributes [hasRole('ROLE_ADMIN')]
+2025-09-18 19:32:54.887 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /admin/edit-ftp/1
+2025-09-18 19:32:54.887 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/admin/edit-ftp/1", parameters={}
+2025-09-18 19:32:54.888 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AdminController#editFTPForm(Long, Model)
+2025-09-18 19:32:54.893 [http-nio-8080-exec-3] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:32:54.904 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:32:54.904 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:03.363 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /admin/edit-ftp/1
+2025-09-18 19:33:03.364 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:03.364 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:03.365 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /admin/edit-ftp/1] with attributes [hasRole('ROLE_ADMIN')]
+2025-09-18 19:33:03.365 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /admin/edit-ftp/1
+2025-09-18 19:33:03.365 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - POST "/xfer-ftp-web-service/admin/edit-ftp/1", parameters={masked}
+2025-09-18 19:33:03.366 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AdminController#editFTP(Long, Map, List, Authentication, RedirectAttributes)
+2025-09-18 19:33:04.460 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.view.RedirectView - View name 'redirect:', model {}
+2025-09-18 19:33:04.465 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 302 FOUND
+2025-09-18 19:33:04.465 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:04.469 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /admin
+2025-09-18 19:33:04.469 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:04.469 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:04.470 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /admin] with attributes [hasRole('ROLE_ADMIN')]
+2025-09-18 19:33:04.470 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /admin
+2025-09-18 19:33:04.471 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/admin", parameters={}
+2025-09-18 19:33:04.472 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AdminController#adminPanel(Model, Authentication)
+2025-09-18 19:33:04.482 [http-nio-8080-exec-8] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:04.491 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:04.491 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:06.522 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /logout
+2025-09-18 19:33:06.523 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:06.523 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:06.523 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.logout.LogoutFilter - Logging out [UsernamePasswordAuthenticationToken [Principal=User{id=1, username='admin', role='admin', createdAt=2025-09-18T17:12:22.783}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=B7EC5181DF81AED4043174E1B74A9D91], Granted Authorities=[ROLE_ADMIN]]]
+2025-09-18 19:33:06.525 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.l.SecurityContextLogoutHandler - Invalidated session 1D0AE5394A9D07B8967749DC134D8326
+2025-09-18 19:33:06.525 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2025-09-18 19:33:06.525 [http-nio-8080-exec-6] DEBUG o.s.s.web.DefaultRedirectStrategy - Redirecting to /xfer-ftp-web-service/
+2025-09-18 19:33:06.525 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2025-09-18 19:33:06.526 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2025-09-18 19:33:06.526 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:06.529 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /
+2025-09-18 19:33:06.529 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2025-09-18 19:33:06.530 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-09-18 19:33:06.530 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /] with attributes [permitAll]
+2025-09-18 19:33:06.530 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /
+2025-09-18 19:33:06.530 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/", parameters={}
+2025-09-18 19:33:06.531 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AuthController#index()
+2025-09-18 19:33:06.532 [http-nio-8080-exec-7] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:06.535 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2025-09-18 19:33:06.535 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:06.535 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2025-09-18 19:33:06.535 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:08.971 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /login
+2025-09-18 19:33:08.971 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2025-09-18 19:33:08.971 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-09-18 19:33:08.972 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /login] with attributes [permitAll]
+2025-09-18 19:33:08.972 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /login
+2025-09-18 19:33:08.972 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/login", parameters={}
+2025-09-18 19:33:08.973 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.AuthController#login(String, Model)
+2025-09-18 19:33:08.974 [http-nio-8080-exec-5] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:08.977 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2025-09-18 19:33:08.978 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:08.978 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2025-09-18 19:33:08.978 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:11.447 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /login
+2025-09-18 19:33:11.447 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2025-09-18 19:33:11.511 [http-nio-8080-exec-9] DEBUG o.s.s.a.d.DaoAuthenticationProvider - Authenticated user
+2025-09-18 19:33:11.511 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.s.ChangeSessionIdAuthenticationStrategy - Changed session id from BA2D4201EFCBCAFB934BF62DD75BD425
+2025-09-18 19:33:11.511 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.CsrfAuthenticationStrategy - Replaced CSRF Token
+2025-09-18 19:33:11.512 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.UsernamePasswordAuthenticationFilter - Set SecurityContextHolder to UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]
+2025-09-18 19:33:11.512 [http-nio-8080-exec-9] DEBUG o.s.s.web.DefaultRedirectStrategy - Redirecting to /xfer-ftp-web-service/dashboard
+2025-09-18 19:33:11.512 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@89455a1]
+2025-09-18 19:33:11.513 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@89455a1]
+2025-09-18 19:33:11.513 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:11.516 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /dashboard
+2025-09-18 19:33:11.516 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:11.517 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:11.517 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /dashboard] with attributes [authenticated]
+2025-09-18 19:33:11.517 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /dashboard
+2025-09-18 19:33:11.518 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/dashboard", parameters={}
+2025-09-18 19:33:11.518 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.DashboardController#dashboard(Model, Authentication, String)
+2025-09-18 19:33:11.522 [http-nio-8080-exec-10] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:11.528 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:11.528 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:14.186 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /dashboard/browse/1
+2025-09-18 19:33:14.187 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:14.187 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:14.188 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /dashboard/browse/1] with attributes [authenticated]
+2025-09-18 19:33:14.188 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /dashboard/browse/1
+2025-09-18 19:33:14.188 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/dashboard/browse/1", parameters={}
+2025-09-18 19:33:14.189 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.DashboardController#browseFiles(Long, String, Model, Authentication)
+2025-09-18 19:33:14.684 [http-nio-8080-exec-1] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:14.692 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:14.692 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:17.453 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing DELETE /api/delete/1/ISLENDI1602062168094GARANTI_TRANSFER__1_.xls
+2025-09-18 19:33:17.453 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:17.454 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:17.454 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [DELETE /api/delete/1/ISLENDI1602062168094GARANTI_TRANSFER__1_.xls] with attributes [authenticated]
+2025-09-18 19:33:17.455 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured DELETE /api/delete/1/ISLENDI1602062168094GARANTI_TRANSFER__1_.xls
+2025-09-18 19:33:17.455 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - DELETE "/xfer-ftp-web-service/api/delete/1/ISLENDI1602062168094GARANTI_TRANSFER__1_.xls", parameters={}
+2025-09-18 19:33:17.455 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.FTPController#deleteFile(Long, String, String, Authentication)
+2025-09-18 19:33:17.821 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2025-09-18 19:33:17.821 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{success=true, message=Dosya baþarýyla silindi}]
+2025-09-18 19:33:17.822 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:17.823 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:17.829 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /dashboard/browse/1
+2025-09-18 19:33:17.829 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:17.830 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:17.830 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /dashboard/browse/1] with attributes [authenticated]
+2025-09-18 19:33:17.830 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /dashboard/browse/1
+2025-09-18 19:33:17.831 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/dashboard/browse/1", parameters={}
+2025-09-18 19:33:17.831 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.DashboardController#browseFiles(Long, String, Model, Authentication)
+2025-09-18 19:33:18.373 [http-nio-8080-exec-2] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:18.380 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:18.380 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:26.631 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/1
+2025-09-18 19:33:26.632 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:26.632 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:26.632 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /api/upload/1] with attributes [authenticated]
+2025-09-18 19:33:26.633 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/1
+2025-09-18 19:33:26.633 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - POST "/xfer-ftp-web-service/api/upload/1", parameters={multipart}
+2025-09-18 19:33:26.643 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.FTPController#uploadFile(Long, MultipartFile, String, Authentication)
+2025-09-18 19:33:27.188 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2025-09-18 19:33:27.188 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{success=true, message=Dosya baþarýyla yüklendi}]
+2025-09-18 19:33:27.190 [http-nio-8080-exec-4] WARN  o.s.w.m.s.StandardServletMultipartResolver - Failed to perform cleanup of multipart items
+java.io.UncheckedIOException: Cannot delete E:\TEMP\tomcat.8080.4383827043110859755\work\Tomcat\localhost\xfer-ftp-web-service\upload_c8de0616_025b_43a0_bc0a_f366c78ecad0_00000005.tmp
+	at org.apache.tomcat.util.http.fileupload.disk.DiskFileItem.delete(DiskFileItem.java:428)
+	at org.apache.catalina.core.ApplicationPart.delete(ApplicationPart.java:53)
+	at org.springframework.web.multipart.support.StandardServletMultipartResolver.cleanupMultipart(StandardServletMultipartResolver.java:134)
+	at org.springframework.web.servlet.DispatcherServlet.cleanupMultipart(DispatcherServlet.java:1251)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1108)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:965)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:555)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:623)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:209)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:178)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:337)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:115)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:81)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:122)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:126)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:81)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:109)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:149)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:223)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:217)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:132)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:178)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:178)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:178)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:178)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:153)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:168)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:481)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:130)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:928)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1794)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: java.io.IOException: Cannot delete E:\TEMP\tomcat.8080.4383827043110859755\work\Tomcat\localhost\xfer-ftp-web-service\upload_c8de0616_025b_43a0_bc0a_f366c78ecad0_00000005.tmp
+	... 88 common frames omitted
+2025-09-18 19:33:27.195 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:27.195 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:33:27.196 [http-nio-8080-exec-4] WARN  o.apache.catalina.connector.Request - Failed to deleted temporary file used for part [file]
+java.io.UncheckedIOException: Cannot delete E:\TEMP\tomcat.8080.4383827043110859755\work\Tomcat\localhost\xfer-ftp-web-service\upload_c8de0616_025b_43a0_bc0a_f366c78ecad0_00000005.tmp
+	at org.apache.tomcat.util.http.fileupload.disk.DiskFileItem.delete(DiskFileItem.java:428)
+	at org.apache.catalina.core.ApplicationPart.delete(ApplicationPart.java:53)
+	at org.apache.catalina.connector.Request.recycle(Request.java:475)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:420)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:928)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1794)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: java.io.IOException: Cannot delete E:\TEMP\tomcat.8080.4383827043110859755\work\Tomcat\localhost\xfer-ftp-web-service\upload_c8de0616_025b_43a0_bc0a_f366c78ecad0_00000005.tmp
+	... 13 common frames omitted
+2025-09-18 19:33:27.205 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /dashboard/browse/1
+2025-09-18 19:33:27.206 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:27.206 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:33:27.207 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /dashboard/browse/1] with attributes [authenticated]
+2025-09-18 19:33:27.207 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /dashboard/browse/1
+2025-09-18 19:33:27.207 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/dashboard/browse/1", parameters={}
+2025-09-18 19:33:27.208 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.DashboardController#browseFiles(Long, String, Model, Authentication)
+2025-09-18 19:33:27.791 [http-nio-8080-exec-8] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:33:27.798 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:33:27.799 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:34:08.748 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /dashboard/browse/1
+2025-09-18 19:34:08.748 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:34:08.749 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=User{id=2, username='test_test2885', role='user', createdAt=2025-09-18T17:50:24.812}, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=BA2D4201EFCBCAFB934BF62DD75BD425], Granted Authorities=[ROLE_USER]]]
+2025-09-18 19:34:08.749 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /dashboard/browse/1] with attributes [authenticated]
+2025-09-18 19:34:08.749 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /dashboard/browse/1
+2025-09-18 19:34:08.750 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/xfer-ftp-web-service/dashboard/browse/1", parameters={}
+2025-09-18 19:34:08.750 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.xfer.controller.DashboardController#browseFiles(Long, String, Model, Authentication)
+2025-09-18 19:34:09.215 [http-nio-8080-exec-7] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, application/signed-exchange;v=b3;q=0.7, */*;q=0.8]
+2025-09-18 19:34:09.223 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-18 19:34:09.223 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 19:34:14.151 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-18 19:34:14.153 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-18 19:34:14.155 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
