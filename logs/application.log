@@ -13876,3 +13876,6 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: E:/Yazýlým Proje
 2025-09-18 20:50:21.152 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /h2-console/tree_user.gif
 2025-09-18 20:50:21.154 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
 2025-09-18 20:50:21.154 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2025-09-18 20:50:58.555 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-18 20:50:58.557 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-18 20:50:58.559 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
