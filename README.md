@@ -56,7 +56,7 @@ Veritabanı dosyası:
 1. Uygulamaya giriş yapın
 2. Varsayılan admin hesabı:
    - Kullanıcı adı: `admin`
-   - Şifre: `c[R0bJN$$&\r#G&)xSk1L%b`
+   - Şifre: `45SbxhWTTsXD/2oXQju_LsW`
 
 ## Yapılandırma
 

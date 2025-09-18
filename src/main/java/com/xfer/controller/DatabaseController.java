@@ -17,7 +17,7 @@ public class DatabaseController {
     @Value("${spring.datasource.username:sa}")
     private String dbUsername;
     
-    @Value("${spring.datasource.password:admin123}")
+    @Value("${spring.datasource.password:9HdgNXsQVgj5MRFn5z2-tK7}")
     private String dbPassword;
     
     @GetMapping("/database")
