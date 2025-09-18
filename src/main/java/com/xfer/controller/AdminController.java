@@ -70,7 +70,7 @@ public class AdminController {
         model.addAttribute("todayTransfers", todayTransfers);
         model.addAttribute("totalSize", totalSize);
         
-        return "admin";
+        return "admin/admin";
     }
     
     @GetMapping("/add-ftp")
@@ -84,7 +84,7 @@ public class AdminController {
         
         List<User> users = authService.getAllUsers();
         model.addAttribute("users", users);
-        return "admin_add_ftp";
+        return "admin/admin_add_ftp";
     }
     
     @PostMapping("/add-ftp")
@@ -152,7 +152,7 @@ public class AdminController {
         model.addAttribute("users", users);
         model.addAttribute("assignments", assignments);
         
-        return "admin_edit_ftp";
+        return "admin/admin_edit_ftp";
     }
     
     @PostMapping("/edit-ftp/{id}")
@@ -247,7 +247,7 @@ public class AdminController {
             return "redirect:/dashboard?error=access_denied";
         }
         
-        return "add_user";
+        return "admin/add_user";
     }
     
     @PostMapping("/add-user")
@@ -281,7 +281,7 @@ public class AdminController {
     public String editUserForm(@PathVariable Long id, Model model) {
         User user = authService.getUserById(id);
         model.addAttribute("user", user);
-        return "admin_edit_user";
+        return "admin/admin_edit_user";
     }
     
     @PostMapping("/edit-user/{id}")

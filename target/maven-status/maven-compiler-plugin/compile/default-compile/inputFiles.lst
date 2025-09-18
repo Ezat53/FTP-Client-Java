@@ -3,6 +3,7 @@ E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\entity\FTPUserAssignm
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\FTPAccountRepository.java
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\repository\TransferLogRepository.java
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\AuthController.java
+E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\controller\DatabaseController.java
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\FtpClientApplication.java
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\TransferService.java
 E:\Yazýlým Projeleri\FTP-Clien-Java\src\main\java\com\xfer\service\FTPService.java
