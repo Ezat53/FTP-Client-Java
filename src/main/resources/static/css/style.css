@@ -9,5 +9,6 @@
 @import url('animations.css');
 @import url('responsive.css');
 @import url('utilities.css');
+@import url('override.css');
 
 /* Custom application-specific styles can be added here */

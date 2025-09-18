@@ -1,0 +1,309 @@
+/* Override CSS - Highest specificity to override SCSS and Bootstrap */
+
+/* Override Bootstrap CSS Custom Properties for dark theme */
+html[data-theme="dark"] {
+    --bs-table-bg: #1e293b !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-color-type: #e2e8f0 !important;
+}
+
+html.dark {
+    --bs-table-bg: #1e293b !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-color-type: #e2e8f0 !important;
+}
+
+/* Maximum specificity for dark theme tables */
+html[data-theme="dark"] body .table,
+html[data-theme="dark"] body .table.table-striped,
+html[data-theme="dark"] body .table.table-hover {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] body .table th,
+html[data-theme="dark"] body .table td,
+html[data-theme="dark"] body .table > :not(caption) > * > * {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] body .table thead th {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: white !important;
+}
+
+html[data-theme="dark"] body .table tbody tr {
+    background-color: #1e293b !important;
+}
+
+html[data-theme="dark"] body .table tbody tr:hover,
+html[data-theme="dark"] body .table tbody tr:hover td {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+html[data-theme="dark"] body .table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html[data-theme="dark"] body .table-striped tbody tr:nth-of-type(even) td {
+    background-color: #1e293b !important;
+}
+
+html[data-theme="dark"] body .table-responsive {
+    background-color: #1e293b !important;
+}
+
+html[data-theme="dark"] body .table-responsive .table {
+    background-color: #1e293b !important;
+}
+
+/* Legacy .dark class with maximum specificity */
+html.dark body .table,
+html.dark body .table.table-striped,
+html.dark body .table.table-hover {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark body .table th,
+html.dark body .table td,
+html.dark body .table > :not(caption) > * > * {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+
+html.dark body .table thead th {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: white !important;
+}
+
+html.dark body .table tbody tr {
+    background-color: #1e293b !important;
+}
+
+html.dark body .table tbody tr:hover,
+html.dark body .table tbody tr:hover td {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark body .table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark body .table-striped tbody tr:nth-of-type(even) td {
+    background-color: #1e293b !important;
+}
+
+html.dark body .table-responsive {
+    background-color: #1e293b !important;
+}
+
+html.dark body .table-responsive .table {
+    background-color: #1e293b !important;
+}
+
+/* Override Bootstrap's specific table cell selector */
+html[data-theme="dark"] body .table > :not(caption) > * > * {
+    padding: .5rem .5rem !important;
+    color: #e2e8f0 !important;
+    background-color: #1e293b !important;
+    border-bottom-width: var(--bs-border-width) !important;
+    box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.05) !important;
+}
+
+html[data-theme="dark"] body .table > :not(caption) > * > *:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    box-shadow: inset 0 0 0 9999px rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark body .table > :not(caption) > * > * {
+    padding: .5rem .5rem !important;
+    color: #e2e8f0 !important;
+    background-color: #1e293b !important;
+    border-bottom-width: var(--bs-border-width) !important;
+    box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark body .table > :not(caption) > * > *:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    box-shadow: inset 0 0 0 9999px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Override Bootstrap's .table class with maximum specificity */
+html[data-theme="dark"] body .table {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark body .table {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Override all Bootstrap table variations */
+html[data-theme="dark"] body .table.table-striped,
+html[data-theme="dark"] body .table.table-hover,
+html[data-theme="dark"] body .table.table-bordered,
+html[data-theme="dark"] body .table.table-sm,
+html[data-theme="dark"] body .table.table-dark {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark body .table.table-striped,
+html.dark body .table.table-hover,
+html.dark body .table.table-bordered,
+html.dark body .table.table-sm,
+html.dark body .table.table-dark {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Maximum specificity for all table containers */
+html[data-theme="dark"] body div .table,
+html[data-theme="dark"] body .container .table,
+html[data-theme="dark"] body .container-fluid .table,
+html[data-theme="dark"] body .row .table,
+html[data-theme="dark"] body .col .table,
+html[data-theme="dark"] body .card .table,
+html[data-theme="dark"] body .card-body .table {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark body div .table,
+html.dark body .container .table,
+html.dark body .container-fluid .table,
+html.dark body .row .table,
+html.dark body .col .table,
+html.dark body .card .table,
+html.dark body .card-body .table {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Ultimate override - Force all table elements in dark theme */
+html[data-theme="dark"] * .table,
+html[data-theme="dark"] * .table *,
+html[data-theme="dark"] * .table > *,
+html[data-theme="dark"] * .table > * > *,
+html[data-theme="dark"] * .table > * > * > * {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}
+
+html.dark * .table,
+html.dark * .table *,
+html.dark * .table > *,
+html.dark * .table > * > *,
+html.dark * .table > * > * > * {
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-bg: #1e293b !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+}

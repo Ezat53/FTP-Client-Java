@@ -1,8 +1,6 @@
-com\xfer\service\AuthService.class
 com\xfer\controller\ApiController.class
 com\xfer\entity\TransferLog.class
 com\xfer\service\FTPService.class
-com\xfer\FtpClientApplication.class
 com\xfer\controller\CustomErrorController.class
 com\xfer\config\SecurityConfig.class
 com\xfer\controller\FTPController.class
@@ -10,9 +8,12 @@ com\xfer\config\WebConfig.class
 com\xfer\controller\AdminController.class
 com\xfer\controller\DashboardController.class
 com\xfer\repository\TransferLogRepository.class
+com\xfer\entity\FTPAccount.class
+com\xfer\service\InitializationService.class
+com\xfer\service\AuthService.class
+com\xfer\FtpClientApplication.class
 com\xfer\repository\FTPUserAssignmentRepository.class
 com\xfer\entity\FTPUserAssignment.class
-com\xfer\entity\FTPAccount.class
 com\xfer\service\FTPService$FileInfo.class
 com\xfer\service\TransferService$TransferStats.class
 com\xfer\repository\FTPAccountRepository.class
@@ -21,4 +22,3 @@ com\xfer\entity\User.class
 com\xfer\service\TransferService.class
 com\xfer\repository\UserRepository.class
 com\xfer\service\FTPOperationsService.class
-com\xfer\service\InitializationService.class

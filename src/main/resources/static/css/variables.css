@@ -38,4 +38,25 @@
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.5);
     --navbar-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     --footer-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    
+    /* Bootstrap body custom properties override */
+    --bs-body-color: #e2e8f0 !important;
+    --bs-body-bg: #0f172a !important;
+    --bs-border-color: #334155 !important;
+    
+    /* Bootstrap table custom properties override */
+    --bs-table-bg: #1e293b !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-bg-state: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-bg-type: #1e293b !important;
+    --bs-table-color-state: #e2e8f0 !important;
+    --bs-table-color-type: #e2e8f0 !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-striped-color: #e2e8f0 !important;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05) !important;
+    --bs-table-active-color: #e2e8f0 !important;
+    --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
+    --bs-table-hover-color: #e2e8f0 !important;
+    --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
 }

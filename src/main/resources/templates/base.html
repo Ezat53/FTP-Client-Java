@@ -20,23 +20,24 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto" th:if="${#authentication != null and #authentication.isAuthenticated()}">
+                
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/dashboard}">
                             <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                         </a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="nav-link" th:href="@{/admin}">
                             <i class="fas fa-cogs me-1"></i>Admin Panel
                         </a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="nav-link" th:href="@{/admin/add-user}">
                             <i class="fas fa-user-plus me-1"></i>Kullanıcı Ekle
                         </a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="nav-link" th:href="@{/admin/add-ftp}">
                             <i class="fas fa-server me-1"></i>FTP Hesabı Ekle
                         </a>
@@ -47,7 +48,7 @@
                     <!-- Giriş yapmış kullanıcı için -->
                     <li class="nav-item dropdown" th:if="${#authentication != null and #authentication.isAuthenticated()}">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i><span th:text="${#authentication.principal.username}">User</span>
+                            <i class="fas fa-user me-1"></i><span th:text="${#authentication.name}">User</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/logout}">

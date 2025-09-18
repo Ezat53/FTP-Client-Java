@@ -69,17 +69,74 @@
     color: var(--text-color);
 }
 
-[data-theme="dark"] .table {
-    color: var(--text-color);
+/* High specificity selectors to override SCSS */
+[data-theme="dark"] body .table {
+    color: var(--text-color) !important;
+    background-color: var(--card-bg) !important;
 }
 
-[data-theme="dark"] .table th,
-[data-theme="dark"] .table td {
-    border-color: var(--border-color);
+[data-theme="dark"] body .table th,
+[data-theme="dark"] body .table td {
+    border-color: var(--border-color) !important;
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
 }
 
-[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
-    background-color: rgba(255, 255, 255, 0.05);
+[data-theme="dark"] body .table thead th {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: white !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] body .table tbody tr {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] body .table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(even) > td {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] body .table-hover > tbody > tr:hover > td {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+[data-theme="dark"] body .table-responsive {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] body .table-responsive .table {
+    background-color: var(--card-bg) !important;
+}
+
+/* Even higher specificity for Bootstrap table classes */
+[data-theme="dark"] body .table.table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] body .table.table-striped tbody tr:nth-of-type(even) td {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] body .table.table-hover tbody tr:hover td {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Override Bootstrap's table background */
+[data-theme="dark"] body .table > :not(caption) > * > * {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] body .table > :not(caption) > * > *:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
 }
 
 [data-theme="dark"] .modal-content {
@@ -146,12 +203,56 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.dark .table {
-    color: #e2e8f0;
+/* High specificity for legacy .dark class */
+.dark body .table {
+    color: #e2e8f0 !important;
+    background-color: #1e293b !important;
 }
 
-.dark .table-hover tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+.dark body .table th,
+.dark body .table td {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+
+.dark body .table thead th {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: white !important;
+}
+
+.dark body .table tbody tr {
+    background-color: #1e293b !important;
+}
+
+.dark body .table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+.dark body .table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark body .table-striped > tbody > tr:nth-of-type(even) > td {
+    background-color: #1e293b !important;
+}
+
+.dark body .table-responsive {
+    background-color: #1e293b !important;
+}
+
+.dark body .table-responsive .table {
+    background-color: #1e293b !important;
+}
+
+/* Override Bootstrap's table background for .dark */
+.dark body .table > :not(caption) > * > * {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+.dark body .table > :not(caption) > * > *:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
 }
 
 .dark .form-control {
