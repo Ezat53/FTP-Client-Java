@@ -366,15 +366,9 @@ public class FTPService {
             session.setConfig("ServerAliveInterval", "60");
             session.setConfig("ServerAliveCountMax", "3");
             
-            // Çok eski OpenSSH sürümleri için ek ayarlar (5.3p1 uyumlu)
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
-            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("compression.s2c", "none,zlib");
-            session.setConfig("compression.c2s", "none,zlib");
-            session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
+            // Basit SFTP bağlantı ayarları
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password");
             
             // Set connection timeout
             session.setTimeout(30000); // 30 seconds
@@ -627,15 +621,9 @@ public class FTPService {
             session.setConfig("ServerAliveInterval", "60");
             session.setConfig("ServerAliveCountMax", "3");
             
-            // Çok eski OpenSSH sürümleri için ek ayarlar (5.3p1 uyumlu)
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
-            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("compression.s2c", "none,zlib");
-            session.setConfig("compression.c2s", "none,zlib");
-            session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
+            // Basit SFTP bağlantı ayarları
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password");
             
             session.setTimeout(30000); // 30 seconds
             session.connect();
@@ -800,15 +788,9 @@ public class FTPService {
             session.setConfig("ServerAliveInterval", "60");
             session.setConfig("ServerAliveCountMax", "3");
             
-            // Çok eski OpenSSH sürümleri için ek ayarlar (5.3p1 uyumlu)
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
-            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("compression.s2c", "none,zlib");
-            session.setConfig("compression.c2s", "none,zlib");
-            session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
+            // Basit SFTP bağlantı ayarları
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password");
             
             session.setTimeout(30000); // 30 seconds
             session.connect();
@@ -934,15 +916,9 @@ public class FTPService {
             session.setConfig("ServerAliveInterval", "60");
             session.setConfig("ServerAliveCountMax", "3");
             
-            // Çok eski OpenSSH sürümleri için ek ayarlar (5.3p1 uyumlu)
-            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
-            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc,blowfish-cbc,arcfour");
-            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5,hmac-md5-96");
-            session.setConfig("compression.s2c", "none,zlib");
-            session.setConfig("compression.c2s", "none,zlib");
-            session.setConfig("server_host_key", "ssh-rsa,ssh-dss");
+            // Basit SFTP bağlantı ayarları
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password");
             
             session.setTimeout(30000); // 30 seconds
             session.connect();

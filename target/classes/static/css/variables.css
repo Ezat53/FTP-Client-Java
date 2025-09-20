@@ -68,4 +68,23 @@
     
     /* Bootstrap light RGB override for dark mode */
     --bs-light-rgb: 51, 65, 85 !important;
+    
+    /* Sort button styling for dark mode */
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border: none !important;
+        color: white !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
 }

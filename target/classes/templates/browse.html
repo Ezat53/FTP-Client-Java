@@ -62,7 +62,12 @@
                                     <tr>
                                         <th>Ad</th>
                                         <th>Boyut</th>
-                                        <th>Tarih</th>
+                                        <th>
+                                            Tarih
+                                            <button class="btn btn-sm btn-primary ms-2" onclick="sortByDate()" id="dateSortBtn" title="Tarihe göre sırala" style="min-width: 40px; height: 32px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                <i class="fas fa-sort" id="dateSortIcon"></i>
+                                            </button>
+                                        </th>
                                         <th>İşlemler</th>
                                     </tr>
                                 </thead>
@@ -137,142 +142,7 @@
             </div>
         </div>
     </div>
-        <script>
-            function showUploadModal() {
-                new bootstrap.Modal(document.getElementById('uploadModal')).show();
-            }
-            
-            function uploadFileLocal() {
-                const form = document.getElementById('uploadForm');
-                const formData = new FormData(form);
-                
-                // Get account ID from hidden input
-                const accountIdInput = document.getElementById('accountId');
-                const pathInput = form.querySelector('input[name="path"]');
-                
-                if (!accountIdInput || !pathInput) {
-                    alert('Form bilgileri alınamadı. Sayfayı yenileyin.');
-                    return;
-                }
-                
-                const accountId = accountIdInput.value;
-                const currentPath = pathInput.value;
-                
-                console.log('Upload - Account ID:', accountId);
-                console.log('Upload path:', currentPath);
-                
-                // Get CSRF token
-                const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                
-                fetch('/xfer-ftp-web-service/api/upload/' + accountId, {
-                    method: 'POST',
-                    headers: {
-                        [header]: token
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Hata: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Upload error:', error);
-                    alert('Dosya yüklenirken bir hata oluştu: ' + error.message);
-                });
-            }
-            
-            function deleteFileLocal(filename) {
-                if (confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) {
-                    // Get account ID from hidden input in upload form
-                    const accountIdInput = document.getElementById('accountId');
-                    const pathInput = document.querySelector('#uploadForm input[name="path"]');
-                    
-                    if (!accountIdInput || !pathInput) {
-                        alert('Hesap bilgileri alınamadı. Sayfayı yenileyin.');
-                        return;
-                    }
-                    
-                    const accountId = accountIdInput.value;
-                    const currentPath = pathInput.value;
-                    
-                    console.log('Delete - Account ID:', accountId, 'Path:', currentPath);
-                    
-                    // Get CSRF token
-                    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                    
-                    // Get current path parameter
-                    const pathParam = currentPath && currentPath !== '/' ? '?path=' + encodeURIComponent(currentPath) : '';
-                    
-                    fetch('/xfer-ftp-web-service/api/delete/' + accountId + '/' + encodeURIComponent(filename) + pathParam, {
-                        method: 'DELETE',
-                        headers: {
-                            [header]: token
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('Hata: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Delete error:', error);
-                        alert('Dosya silinirken bir hata oluştu: ' + error.message);
-                    });
-                }
-            }
-            
-            function navigateToDirectory(dirName) {
-                const accountIdInput = document.getElementById('accountId');
-                if (!accountIdInput) {
-                    alert('Hesap bilgileri alınamadı. Sayfayı yenileyin.');
-                    return;
-                }
-                
-                const accountId = accountIdInput.value;
-                const urlCurrentPath = new URLSearchParams(window.location.search).get('path') || '';
-                const newPath = urlCurrentPath ? urlCurrentPath + '/' + dirName : dirName;
-                window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + '?path=' + encodeURIComponent(newPath);
-            }
-            
-            function goBack() {
-                const accountIdInput = document.getElementById('accountId');
-                if (!accountIdInput) {
-                    alert('Hesap bilgileri alınamadı. Sayfayı yenileyin.');
-                    return;
-                }
-                
-                const accountId = accountIdInput.value;
-                const urlCurrentPath = new URLSearchParams(window.location.search).get('path') || '';
-                if (urlCurrentPath) {
-                    const pathParts = urlCurrentPath.split('/');
-                    pathParts.pop(); // Remove last directory
-                    const newPath = pathParts.join('/');
-                    window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
-                }
-            }
-            
-            function refreshFiles() {
-                location.reload();
-            }
-            
-            // Show/hide back button based on current path
-            document.addEventListener('DOMContentLoaded', function() {
-                const currentPath = new URLSearchParams(window.location.search).get('path');
-                const backBtn = document.getElementById('backBtn');
-                if (currentPath && currentPath !== '/' && currentPath !== '' && backBtn) {
-                    backBtn.style.display = 'inline-block';
-                }
-            });
-        </script>
+        <script th:src="@{/js/browse.js}"></script>
     </div>
 </body>
 </html>
