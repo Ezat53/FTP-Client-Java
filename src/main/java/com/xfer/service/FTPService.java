@@ -126,7 +126,7 @@ public class FTPService {
     }
     
     public FTPAccount updateAccount(Long accountId, String name, String protocol, String host,
-                                  Integer port, String username, String password, List<Long> userIds) {
+                                  Integer port, String username, String password, String remotePath) {
         FTPAccount account = ftpAccountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
@@ -140,14 +140,8 @@ public class FTPService {
             String encryptedPassword = encryptPassword(password);
             account.setPassword(encryptedPassword);
         }
-        
-        // Update user assignments if provided
-        if (userIds != null) {
-            ftpUserAssignmentRepository.deleteByFtpAccountId(accountId);
-            for (Long userId : userIds) {
-                FTPUserAssignment assignment = new FTPUserAssignment(accountId, userId, account.getOwnerId());
-                ftpUserAssignmentRepository.save(assignment);
-            }
+        if (remotePath != null) {
+            account.setRemotePath(remotePath);
         }
         
         return ftpAccountRepository.save(account);

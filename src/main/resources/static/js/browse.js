@@ -99,7 +99,20 @@ function navigateToDirectory(dirName) {
     
     const accountId = accountIdInput.value;
     const urlCurrentPath = new URLSearchParams(window.location.search).get('path') || '';
-    const newPath = urlCurrentPath ? urlCurrentPath + '/' + dirName : dirName;
+    const remotePath = window.remotePath || '/';
+    
+    let newPath;
+    if (urlCurrentPath) {
+        newPath = urlCurrentPath + '/' + dirName;
+    } else {
+        newPath = dirName;
+    }
+    
+    // Ensure the new path starts with the remote path
+    if (!newPath.startsWith(remotePath)) {
+        newPath = remotePath + newPath;
+    }
+    
     window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + '?path=' + encodeURIComponent(newPath);
 }
 
@@ -112,11 +125,20 @@ function goBack() {
     
     const accountId = accountIdInput.value;
     const urlCurrentPath = new URLSearchParams(window.location.search).get('path') || '';
+    const remotePath = window.remotePath || '/';
+    
     if (urlCurrentPath) {
         const pathParts = urlCurrentPath.split('/');
         pathParts.pop(); // Remove last directory
         const newPath = pathParts.join('/');
-        window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
+        
+        // Check if the new path would be above the remote path
+        if (newPath && newPath !== '/' && !newPath.startsWith(remotePath)) {
+            // If trying to go above remote path, stay at remote path
+            window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + '?path=' + encodeURIComponent(remotePath);
+        } else {
+            window.location.href = '/xfer-ftp-web-service/dashboard/browse/' + accountId + (newPath ? '?path=' + encodeURIComponent(newPath) : '');
+        }
     }
 }
 
@@ -198,12 +220,23 @@ function getDateFromRow(row) {
     return 0; // Parse edilemezse en eski olarak kabul et
 }
 
-// Show/hide back button based on current path
+// Show/hide back button based on current path and remote path restriction
 document.addEventListener('DOMContentLoaded', function() {
     const currentPath = new URLSearchParams(window.location.search).get('path');
+    const remotePath = window.remotePath || '/';
     const backBtn = document.getElementById('backBtn');
-    if (currentPath && currentPath !== '/' && currentPath !== '' && backBtn) {
-        backBtn.style.display = 'inline-block';
+    
+    // Show back button only if we're not at the remote path root
+    if (currentPath && currentPath !== remotePath && currentPath !== '/' && currentPath !== '' && backBtn) {
+        // Check if we can go back without going above the remote path
+        const pathParts = currentPath.split('/');
+        pathParts.pop(); // Remove last directory
+        const parentPath = pathParts.join('/');
+        
+        // Only show back button if parent path is still within or at the remote path
+        if (parentPath.startsWith(remotePath) || parentPath === remotePath) {
+            backBtn.style.display = 'inline-block';
+        }
     }
     
     // Sayfa yüklendiğinde otomatik olarak yeniden eskiye sırala

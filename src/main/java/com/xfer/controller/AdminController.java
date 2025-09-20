@@ -151,6 +151,9 @@ public class AdminController {
         System.out.println("=== EDIT FTP DEBUG ===");
         System.out.println("Account ID: " + id);
         System.out.println("Account Name: " + account.getName());
+        System.out.println("Protocol: '" + account.getProtocol() + "'");
+        System.out.println("Host: " + account.getHost());
+        System.out.println("Port: " + account.getPort());
         System.out.println("Users count: " + users.size());
         System.out.println("Assignments count: " + assignments.size());
         for (FTPUserAssignment assignment : assignments) {
@@ -197,9 +200,10 @@ public class AdminController {
             Integer port = Integer.parseInt(params.get("port"));
             String username = params.get("username");
             String password = params.get("password");
+            String remotePath = params.get("remote_path");
             
-            // Update account basic info
-            ftpService.updateAccount(id, name, protocol, host, port, username, password, null);
+            // Update account basic info including remote path
+            ftpService.updateAccount(id, name, protocol, host, port, username, password, remotePath);
             
             // Update user assignments with permissions
             System.out.println("Updating assignments for FTP account " + id);

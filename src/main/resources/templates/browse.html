@@ -18,6 +18,9 @@
                         <p class="text-muted mb-0">
                             <span th:text="${account.protocol}">FTP</span> - 
                             <span th:text="${account.host}">host</span>:<span th:text="${account.port}">21</span>
+                            <span th:if="${remotePath != null and remotePath != '/'}" class="ms-2">
+                                <i class="fas fa-folder me-1"></i>Başlangıç: <span th:text="${remotePath}">/</span>
+                            </span>
                         </p>
                     </div>
                     <div>
@@ -142,6 +145,12 @@
             </div>
         </div>
     </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.remotePath = /*[[${remotePath}]]*/ '/';
+            window.currentPath = /*[[${currentPath}]]*/ '/';
+            /*]]>*/
+        </script>
         <script th:src="@{/js/browse.js}"></script>
     </div>
 </body>

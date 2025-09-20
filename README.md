@@ -10,12 +10,16 @@ Bu proje, Python Flask uygulamasının Java Spring Boot versiyonudur. Tomcat sun
 - **Aktivite Takibi**: Detaylı transfer logları
 - **Modern UI**: Bootstrap 5 ile responsive tasarım
 - **Güvenlik**: Spring Security ile kimlik doğrulama ve yetkilendirme
+- **Uzak Dizin Kısıtlaması**: FTP hesapları için başlangıç dizini belirleme
+- **Otomatik Şifre Üretimi**: Güçlü şifre üretme ve kopyalama özellikleri
+- **İzin Yönetimi**: Kullanıcı bazlı detaylı dosya işlem izinleri
+- **Gerçek Zamanlı Dosya Tarayıcısı**: Web tabanlı dosya yönetimi
 
 ## Teknolojiler
 
 - **Backend**: Spring Boot 2.7.18, Spring Security, Spring Data JPA
-- **Database**: SQLite (yerel dosya veritabanı)
-- **Frontend**: JSP, Bootstrap 5, JavaScript
+- **Database**: H2 Database (yerel dosya veritabanı)
+- **Frontend**: Thymeleaf, Bootstrap 5, JavaScript
 - **FTP/SFTP**: Apache Commons Net, JSch
 - **Build Tool**: Maven
 - **Server**: Tomcat 9+
@@ -43,13 +47,14 @@ mvn clean package
 
 ### 3. Veritabanı Yapılandırması
 
-#### SQLite (Varsayılan)
-Uygulama varsayılan olarak SQLite veritabanı kullanır. Veritabanı dosyası `./data/ftp_manager.db` konumunda oluşturulur.
+#### H2 Database (Varsayılan)
+Uygulama varsayılan olarak H2 Database kullanır. Veritabanı dosyası `./data/ftp_manager.mv.db` konumunda oluşturulur.
 
 Veritabanı dosyası:
-- **Konum**: `./data/ftp_manager.db`
-- **Tip**: SQLite (yerel dosya)
-- **Yönetim**: SQLite Browser veya herhangi bir SQLite yönetim aracı ile açabilirsiniz
+- **Konum**: `./data/ftp_manager.mv.db`
+- **Tip**: H2 Database (yerel dosya)
+- **Yönetim**: H2 Console veya herhangi bir JDBC yönetim aracı ile açabilirsiniz
+- **Web Console**: `http://localhost:8080/h2-console` (geliştirme modunda)
 
 ### 4. İlk Kullanım
 
@@ -69,7 +74,19 @@ Veritabanı dosyası:
 server.port=8080
 
 # Context path
-server.servlet.context-path=/ftp-client
+server.servlet.context-path=/xfer-ftp-web-service
+
+# H2 Database yapılandırması
+spring.datasource.url=jdbc:h2:file:./data/ftp_manager
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.h2.console.enabled=true
+
+# JPA yapılandırması
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
 
 # Dosya yükleme limiti
 spring.servlet.multipart.max-file-size=16MB
@@ -77,6 +94,10 @@ spring.servlet.multipart.max-request-size=16MB
 
 # Upload klasörü
 app.upload.dir=uploads
+
+# Logging
+logging.level.com.xfer=DEBUG
+logging.file.name=logs/application.log
 ```
 
 ### Güvenlik
@@ -84,6 +105,21 @@ app.upload.dir=uploads
 Spring Security ile korunmuştur. Varsayılan roller:
 - `ADMIN`: Tüm işlemlere erişim
 - `USER`: Sadece atanmış FTP hesaplarına erişim
+
+### İzin Sistemi
+
+Kullanıcılar için detaylı izin yönetimi:
+- **Okuma (Read)**: Dosya listeleme ve indirme
+- **Yazma (Write)**: Dosya düzenleme
+- **Silme (Delete)**: Dosya silme
+- **Yükleme (Upload)**: Dosya yükleme
+
+### Uzak Dizin Kısıtlaması
+
+FTP hesapları için başlangıç dizini belirleme:
+- Her FTP hesabı için özel başlangıç dizini ayarlanabilir
+- Kullanıcılar sadece belirlenen dizin ve alt dizinlerine erişebilir
+- Güvenlik için üst dizinlere erişim engellenir
 
 ## API Endpoints
 
@@ -95,6 +131,7 @@ Spring Security ile korunmuştur. Varsayılan roller:
 
 ### Dashboard
 - `GET /dashboard` - Kullanıcı dashboard'u
+- `GET /dashboard/browse/{accountId}` - Dosya tarayıcısı
 
 ### FTP İşlemleri
 - `POST /api/upload/{accountId}` - Dosya yükleme
@@ -114,6 +151,7 @@ Spring Security ile korunmuştur. Varsayılan roller:
 - `GET /admin/edit-user/{id}` - Kullanıcı düzenleme formu
 - `POST /admin/edit-user/{id}` - Kullanıcı güncelleme
 - `POST /admin/delete-user/{id}` - Kullanıcı silme
+- `GET /admin/debug-account/{id}` - FTP hesabı debug sayfası
 
 ## Geliştirme
 
@@ -125,12 +163,15 @@ src/
 │   ├── java/com/xfer/
 │   │   ├── FtpClientApplication.java
 │   │   ├── config/
-│   │   │   └── SecurityConfig.java
+│   │   │   ├── SecurityConfig.java
+│   │   │   └── WebConfig.java
 │   │   ├── controller/
 │   │   │   ├── AuthController.java
 │   │   │   ├── DashboardController.java
 │   │   │   ├── FTPController.java
-│   │   │   └── AdminController.java
+│   │   │   ├── AdminController.java
+│   │   │   ├── ApiController.java
+│   │   │   └── CustomErrorController.java
 │   │   ├── entity/
 │   │   │   ├── User.java
 │   │   │   ├── FTPAccount.java
@@ -145,44 +186,119 @@ src/
 │   │       ├── AuthService.java
 │   │       ├── FTPService.java
 │   │       ├── TransferService.java
-│   │       └── FTPOperationsService.java
+│   │       ├── FTPOperationsService.java
+│   │       └── InitializationService.java
 │   ├── resources/
-│   │   └── application.properties
+│   │   ├── application.properties
+│   │   ├── static/
+│   │   │   ├── css/
+│   │   │   │   ├── base.css
+│   │   │   │   ├── components.css
+│   │   │   │   ├── style.css
+│   │   │   │   └── ...
+│   │   │   └── js/
+│   │   │       ├── base.js
+│   │   │       ├── browse.js
+│   │   │       ├── add_user.js
+│   │   │       ├── edit_ftp.js
+│   │   │       └── ...
+│   │   └── templates/
+│   │       ├── base.html
+│   │       ├── index.html
+│   │       ├── login.html
+│   │       ├── dashboard.html
+│   │       ├── browse.html
+│   │       ├── admin/
+│   │       │   ├── admin.html
+│   │       │   ├── add_user.html
+│   │       │   ├── admin_edit_user.html
+│   │       │   ├── admin_add_ftp.html
+│   │       │   ├── admin_edit_ftp.html
+│   │       │   └── ...
+│   │       └── error/
+│   │           ├── 404.html
+│   │           └── 500.html
 │   └── webapp/
-│       ├── WEB-INF/
-│       │   ├── views/
-│       │   │   ├── base.jsp
-│       │   │   ├── index.jsp
-│       │   │   ├── login.jsp
-│       │   │   ├── dashboard.jsp
-│       │   │   ├── admin.jsp
-│       │   │   └── ...
-│       │   └── web.xml
-│       ├── css/
-│       │   └── style.css
-│       └── js/
-│           └── main.js
+│       └── WEB-INF/
+│           └── web.xml
 ```
 
 ### Veritabanı Şeması
 
 - **users**: Kullanıcı bilgileri
-- **ftp_accounts**: FTP hesap bilgileri
-- **ftp_user_assignments**: Kullanıcı-FTP hesap atamaları
+- **ftp_accounts**: FTP hesap bilgileri (remote_path alanı dahil)
+- **ftp_user_assignments**: Kullanıcı-FTP hesap atamaları (izinler dahil)
 - **transfer_logs**: Transfer işlem logları
+
+### Yeni Özellikler
+
+#### 1. Uzak Dizin Kısıtlaması
+- FTP hesapları için başlangıç dizini belirleme
+- Kullanıcılar sadece belirlenen dizin ve alt dizinlerine erişebilir
+- Güvenlik için üst dizinlere erişim engellenir
+
+#### 2. Otomatik Şifre Üretimi
+- Güçlü 16 karakterli şifre üretimi
+- Şifre kopyalama özelliği
+- Kullanıcı adı ve şifre birlikte kopyalama
+
+#### 3. Detaylı İzin Yönetimi
+- Okuma, yazma, silme, yükleme izinleri
+- Kullanıcı bazlı izin ataması
+- Admin panelinden kolay yönetim
+
+#### 4. Modern UI/UX
+- Thymeleaf template engine
+- Bootstrap 5 responsive tasarım
+- Toast bildirimleri
+- Gelişmiş form validasyonu
 
 ## Sorun Giderme
 
 ### Yaygın Sorunlar
 
 1. **Port zaten kullanımda**: `application.properties` dosyasında farklı bir port belirtin
-2. **Veritabanı bağlantı hatası**: Veritabanı ayarlarını kontrol edin
+2. **Veritabanı bağlantı hatası**: H2 veritabanı ayarlarını kontrol edin
 3. **Dosya yükleme hatası**: Upload klasörü izinlerini kontrol edin
 4. **FTP bağlantı hatası**: FTP hesap bilgilerini ve ağ bağlantısını kontrol edin
+5. **Protokol uyumsuzluğu**: SFTP sunucuya FTP protokolü ile bağlanmaya çalışıyorsanız, hesap ayarlarında protokolü "sftp" olarak değiştirin
+6. **Uzak dizin erişim hatası**: FTP hesabında belirlenen uzak dizinin mevcut olduğundan emin olun
+7. **İzin hatası**: Kullanıcının gerekli izinlere sahip olduğunu kontrol edin
 
 ### Log Dosyaları
 
-Uygulama logları Tomcat'in log klasöründe bulunur. Hata ayıklama için log seviyesini DEBUG olarak ayarlayabilirsiniz.
+Uygulama logları `logs/application.log` dosyasında bulunur. Hata ayıklama için log seviyesini DEBUG olarak ayarlayabilirsiniz.
+
+### Debug Özellikleri
+
+- **FTP Hesap Debug**: `/admin/debug-account/{id}` endpoint'i ile FTP hesap detaylarını görüntüleyebilirsiniz
+- **Console Logları**: Tarayıcı geliştirici araçlarında detaylı JavaScript logları
+- **Server Logları**: Spring Boot uygulama loglarında detaylı hata mesajları
+
+## Son Güncellemeler
+
+### v2.0.0 - Major Update
+
+#### Yeni Özellikler
+- ✅ **Uzak Dizin Kısıtlaması**: FTP hesapları için başlangıç dizini belirleme
+- ✅ **Otomatik Şifre Üretimi**: Güçlü şifre üretme ve kopyalama sistemi
+- ✅ **Detaylı İzin Yönetimi**: Kullanıcı bazlı dosya işlem izinleri
+- ✅ **Modern UI/UX**: Thymeleaf template engine ve Bootstrap 5
+- ✅ **Gelişmiş Dosya Tarayıcısı**: Web tabanlı dosya yönetimi
+- ✅ **Toast Bildirimleri**: Kullanıcı dostu geri bildirim sistemi
+
+#### Teknik İyileştirmeler
+- 🔄 **Veritabanı**: SQLite'dan H2 Database'e geçiş
+- 🔄 **Template Engine**: JSP'den Thymeleaf'e geçiş
+- 🔄 **Frontend**: Modern JavaScript ve CSS yapısı
+- 🔄 **Güvenlik**: Gelişmiş izin kontrolü ve uzak dizin kısıtlaması
+- 🔄 **API**: RESTful API endpoint'leri ve hata yönetimi
+
+#### Bug Fixes
+- 🐛 **Protokol Tespiti**: FTP/SFTP protokol otomatik tespiti
+- 🐛 **İzin Yükleme**: Edit sayfalarında izin verilerinin doğru yüklenmesi
+- 🐛 **Form Validasyonu**: Gelişmiş form doğrulama ve hata mesajları
+- 🐛 **Responsive Design**: Mobil uyumlu arayüz iyileştirmeleri
 
 ## Lisans
 

@@ -73,10 +73,45 @@ public class DashboardController {
             com.xfer.entity.FTPAccount account = ftpService.getAccountById(accountId)
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
-            System.out.println("Browse request - Account ID: " + accountId + ", Path: " + path);
+            // Get the remote path from account settings
+            String remotePath = account.getRemotePath();
+            if (remotePath == null || remotePath.trim().isEmpty()) {
+                remotePath = "/";
+            }
             
-            // Get files list
-            List<FTPService.FileInfo> files = ftpService.listFiles(accountId, path);
+            // Normalize the remote path (ensure it starts and ends with /)
+            if (!remotePath.startsWith("/")) {
+                remotePath = "/" + remotePath;
+            }
+            if (!remotePath.endsWith("/") && !remotePath.equals("/")) {
+                remotePath = remotePath + "/";
+            }
+            
+            // Determine the actual path to browse
+            String actualPath;
+            if (path == null || path.trim().isEmpty()) {
+                // If no path specified, start from the remote path
+                actualPath = remotePath;
+            } else {
+                // Ensure the requested path is within the allowed remote path
+                String normalizedPath = path.startsWith("/") ? path : "/" + path;
+                if (!normalizedPath.endsWith("/") && !normalizedPath.equals("/")) {
+                    normalizedPath = normalizedPath + "/";
+                }
+                
+                // Check if the requested path is within the allowed remote path
+                if (!normalizedPath.startsWith(remotePath)) {
+                    // If trying to access outside remote path, redirect to remote path
+                    actualPath = remotePath;
+                } else {
+                    actualPath = normalizedPath;
+                }
+            }
+            
+            System.out.println("Browse request - Account ID: " + accountId + ", Protocol: '" + account.getProtocol() + "', Remote Path: " + remotePath + ", Requested Path: " + path + ", Actual Path: " + actualPath);
+            
+            // Get files list using the actual path
+            List<FTPService.FileInfo> files = ftpService.listFiles(accountId, actualPath);
             
             // Get user's assignment for this account
             FTPUserAssignment userAssignment = null;
@@ -88,11 +123,12 @@ public class DashboardController {
                         .orElse(null);
             }
             
-        model.addAttribute("account", account);
-        model.addAttribute("files", files);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("assignment", userAssignment);
-        model.addAttribute("currentPath", path != null ? path : "/");
+            model.addAttribute("account", account);
+            model.addAttribute("files", files);
+            model.addAttribute("currentUser", currentUser);
+            model.addAttribute("assignment", userAssignment);
+            model.addAttribute("currentPath", actualPath);
+            model.addAttribute("remotePath", remotePath);
             
             return "browse";
             
