@@ -121,6 +121,11 @@
                 </div>
             </div>
         </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.assignmentsData = /*[[${assignmentsData}]]*/ {};
+            /*]]>*/
+        </script>
         <script th:src="@{/js/edit_ftp.js}"></script>
     </div>
 </body>

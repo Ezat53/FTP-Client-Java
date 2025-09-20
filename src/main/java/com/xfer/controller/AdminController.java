@@ -148,9 +148,37 @@ public class AdminController {
         List<User> users = authService.getAllUsers();
         List<FTPUserAssignment> assignments = ftpUserAssignmentRepository.findByFtpAccountIdWithUser(id);
         
+        System.out.println("=== EDIT FTP DEBUG ===");
+        System.out.println("Account ID: " + id);
+        System.out.println("Account Name: " + account.getName());
+        System.out.println("Users count: " + users.size());
+        System.out.println("Assignments count: " + assignments.size());
+        for (FTPUserAssignment assignment : assignments) {
+            System.out.println("Assignment: " + assignment);
+            System.out.println("  - User ID: " + assignment.getUserId());
+            System.out.println("  - Can Read: " + assignment.getCanRead());
+            System.out.println("  - Can Write: " + assignment.getCanWrite());
+            System.out.println("  - Can Delete: " + assignment.getCanDelete());
+            System.out.println("  - Can Upload: " + assignment.getCanUpload());
+        }
+        System.out.println("=====================");
+        
+        // Create a simple map for JavaScript serialization
+        java.util.Map<String, Object> assignmentsData = new java.util.HashMap<>();
+        for (FTPUserAssignment assignment : assignments) {
+            java.util.Map<String, Object> assignmentData = new java.util.HashMap<>();
+            assignmentData.put("userId", assignment.getUserId());
+            assignmentData.put("canRead", assignment.getCanRead());
+            assignmentData.put("canWrite", assignment.getCanWrite());
+            assignmentData.put("canDelete", assignment.getCanDelete());
+            assignmentData.put("canUpload", assignment.getCanUpload());
+            assignmentsData.put("assignment_" + assignment.getUserId(), assignmentData);
+        }
+        
         model.addAttribute("account", account);
         model.addAttribute("users", users);
         model.addAttribute("assignments", assignments);
+        model.addAttribute("assignmentsData", assignmentsData);
         
         return "admin/admin_edit_ftp";
     }
