@@ -26,6 +26,9 @@
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
     --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --footer-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
+    /* Bootstrap tertiary background override */
+    --bs-tertiary-bg: #f8f9fa !important;
 }
 
 /* Dark Theme */
@@ -59,4 +62,10 @@
     --bs-table-active-bg: rgba(102, 126, 234, 0.1) !important;
     --bs-table-hover-color: #e2e8f0 !important;
     --bs-table-hover-bg: rgba(102, 126, 234, 0.1) !important;
+    
+    /* Bootstrap tertiary background override */
+    --bs-tertiary-bg: #334155 !important;
+    
+    /* Bootstrap light RGB override for dark mode */
+    --bs-light-rgb: 51, 65, 85 !important;
 }

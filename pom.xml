@@ -81,6 +81,13 @@
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
         </dependency>
+        
+        <!-- Alternative SFTP library for better compatibility -->
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.2.15</version>
+        </dependency>
 
         <!-- JSON Processing -->
         <dependency>

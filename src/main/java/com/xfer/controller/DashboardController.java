@@ -61,8 +61,11 @@ public class DashboardController {
         
         // Check if user has access to this account
         if (!ftpService.hasUserAccess(accountId, currentUser.getId())) {
-            model.addAttribute("error", "Bu hesaba erişim yetkiniz yok");
-            return "redirect:/dashboard";
+            try {
+                return "redirect:/dashboard?error=" + java.net.URLEncoder.encode("Bu hesaba erişim yetkiniz yok", "UTF-8");
+            } catch (java.io.UnsupportedEncodingException e) {
+                return "redirect:/dashboard?error=Bu%20hesaba%20erişim%20yetkiniz%20yok";
+            }
         }
         
         try {
@@ -94,8 +97,14 @@ public class DashboardController {
             return "browse";
             
         } catch (Exception e) {
-            model.addAttribute("error", "Dosya listesi alınırken hata: " + e.getMessage());
-            return "redirect:/dashboard";
+            System.out.println("Error in browseFiles: " + e.getMessage());
+            e.printStackTrace();
+            String errorMessage = "Dosya listesi alınırken hata: " + e.getMessage();
+            try {
+                return "redirect:/dashboard?error=" + java.net.URLEncoder.encode(errorMessage, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException ex) {
+                return "redirect:/dashboard?error=Dosya%20listesi%20alınırken%20hata";
+            }
         }
     }
 }

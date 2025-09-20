@@ -230,16 +230,34 @@ public class FTPService {
                     .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
             
             System.out.println("Listing files for account: " + account.getName() + " (" + account.getProtocol() + ")");
+            System.out.println("Account ID: " + accountId + ", Protocol: '" + account.getProtocol() + "'");
             if (path != null && !path.isEmpty()) {
                 System.out.println("Path: " + path);
             }
             
-            if ("ftp".equals(account.getProtocol())) {
+            // Debug: Check protocol value more carefully
+            String protocol = account.getProtocol();
+            if (protocol == null) {
+                System.out.println("ERROR: Protocol is null for account " + accountId);
+                throw new RuntimeException("Protokol bilgisi bulunamadı");
+            }
+            
+            // Clean the protocol string (trim whitespace and convert to lowercase)
+            protocol = protocol.trim().toLowerCase();
+            
+            System.out.println("Protocol check - Raw value: '" + account.getProtocol() + "', Cleaned: '" + protocol + "', Length: " + protocol.length());
+            System.out.println("Protocol equals 'ftp': " + "ftp".equals(protocol));
+            System.out.println("Protocol equals 'sftp': " + "sftp".equals(protocol));
+            
+            if ("ftp".equals(protocol)) {
+                System.out.println("Using FTP protocol");
                 return listFTPFiles(account, path);
-            } else if ("sftp".equals(account.getProtocol())) {
+            } else if ("sftp".equals(protocol)) {
+                System.out.println("Using SFTP protocol");
                 return listSFTPFiles(account, path);
             } else {
-                throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+                System.out.println("ERROR: Unsupported protocol: '" + protocol + "' (original: '" + account.getProtocol() + "')");
+                throw new RuntimeException("Desteklenmeyen protokol: " + protocol + " (orijinal: " + account.getProtocol() + ")");
             }
         } catch (Exception e) {
             System.out.println("Error listing files for account " + accountId + ": " + e.getMessage());
@@ -262,6 +280,14 @@ public class FTPService {
             
             if (!ftpClient.isConnected()) {
                 throw new RuntimeException("FTP sunucusuna bağlanılamadı");
+            }
+            
+            // Check if we got an SSH response instead of FTP
+            String serverReply = ftpClient.getReplyString();
+            System.out.println("Server reply: " + serverReply);
+            
+            if (serverReply != null && serverReply.contains("SSH-")) {
+                throw new RuntimeException("Yanlış protokol kullanılıyor. Bu sunucu SFTP gerektiriyor, ancak FTP protokolü kullanılıyor. Server Reply: " + serverReply);
             }
             
             System.out.println("Logging in with username: " + account.getUsername());
@@ -327,14 +353,39 @@ public class FTPService {
         ChannelSftp sftpChannel = null;
         
         try {
+            System.out.println("Creating SFTP session for: " + account.getUsername() + "@" + account.getHost() + ":" + account.getPort());
+            
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
             String decryptedPassword = decryptPassword(account.getPassword());
             session.setPassword(decryptedPassword);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect();
             
+            // Eski OpenSSH sürümleri ile uyumlu ayarlar (ScheduledTasks.java'dan alındı)
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
+            session.setConfig("MaxAuthTries", "3");
+            session.setConfig("ServerAliveInterval", "60");
+            session.setConfig("ServerAliveCountMax", "3");
+            
+            // Eski OpenSSH sürümleri için ek ayarlar
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("compression.s2c", "none,zlib");
+            session.setConfig("compression.c2s", "none,zlib");
+            
+            // Set connection timeout
+            session.setTimeout(30000); // 30 seconds
+            
+            System.out.println("Connecting to SFTP server...");
+            session.connect();
+            System.out.println("SFTP session connected successfully");
+            
+            System.out.println("Opening SFTP channel...");
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
+            System.out.println("SFTP channel connected successfully");
             
             // Use specified path or current directory
             String listPath = (path != null && !path.isEmpty() && !path.equals("/")) ? path : ".";
@@ -351,6 +402,8 @@ public class FTPService {
             }
             
         } catch (JSchException | SftpException e) {
+            System.out.println("SFTP connection error: " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("SFTP dosya listesi alınırken hata: " + e.getMessage());
         } finally {
             if (sftpChannel != null) {
@@ -375,12 +428,13 @@ public class FTPService {
             
             System.out.println("Uploading file: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes) to " + account.getProtocol() + "://" + account.getHost() + " at path: " + (path != null ? path : "default"));
             
-            if ("ftp".equals(account.getProtocol())) {
+            String protocol = account.getProtocol().trim().toLowerCase();
+            if ("ftp".equals(protocol)) {
                 return uploadToFTP(account, file, path);
-            } else if ("sftp".equals(account.getProtocol())) {
+            } else if ("sftp".equals(protocol)) {
                 return uploadToSFTP(account, file, path);
             } else {
-                throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+                throw new RuntimeException("Desteklenmeyen protokol: " + protocol);
             }
         } catch (Exception e) {
             System.out.println("Error in uploadFile: " + e.getMessage());
@@ -564,7 +618,24 @@ public class FTPService {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
             String decryptedPassword = decryptPassword(account.getPassword());
             session.setPassword(decryptedPassword);
+            
+            // Eski OpenSSH sürümleri ile uyumlu ayarlar
             session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
+            session.setConfig("MaxAuthTries", "3");
+            session.setConfig("ServerAliveInterval", "60");
+            session.setConfig("ServerAliveCountMax", "3");
+            
+            // Eski OpenSSH sürümleri için ek ayarlar
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("compression.s2c", "none,zlib");
+            session.setConfig("compression.c2s", "none,zlib");
+            
+            session.setTimeout(30000); // 30 seconds
             session.connect();
             
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
@@ -648,12 +719,13 @@ public class FTPService {
         FTPAccount account = getAccountById(accountId)
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
-        if ("ftp".equals(account.getProtocol())) {
+        String protocol = account.getProtocol().trim().toLowerCase();
+        if ("ftp".equals(protocol)) {
             return downloadFromFTP(account, filename, path);
-        } else if ("sftp".equals(account.getProtocol())) {
+        } else if ("sftp".equals(protocol)) {
             return downloadFromSFTP(account, filename, path);
         } else {
-            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+            throw new RuntimeException("Desteklenmeyen protokol: " + protocol);
         }
     }
     
@@ -667,7 +739,8 @@ public class FTPService {
         
         try {
             ftpClient.connect(account.getHost(), account.getPort());
-            ftpClient.login(account.getUsername(), account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            ftpClient.login(account.getUsername(), decryptedPassword);
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             
@@ -717,7 +790,24 @@ public class FTPService {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
             String decryptedPassword = decryptPassword(account.getPassword());
             session.setPassword(decryptedPassword);
+            
+            // Eski OpenSSH sürümleri ile uyumlu ayarlar
             session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
+            session.setConfig("MaxAuthTries", "3");
+            session.setConfig("ServerAliveInterval", "60");
+            session.setConfig("ServerAliveCountMax", "3");
+            
+            // Eski OpenSSH sürümleri için ek ayarlar
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("compression.s2c", "none,zlib");
+            session.setConfig("compression.c2s", "none,zlib");
+            
+            session.setTimeout(30000); // 30 seconds
             session.connect();
             
             sftpChannel = (ChannelSftp) session.openChannel("sftp");
@@ -766,12 +856,13 @@ public class FTPService {
         FTPAccount account = getAccountById(accountId)
                 .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
         
-        if ("ftp".equals(account.getProtocol())) {
+        String protocol = account.getProtocol().trim().toLowerCase();
+        if ("ftp".equals(protocol)) {
             return deleteFromFTP(account, filename, path);
-        } else if ("sftp".equals(account.getProtocol())) {
+        } else if ("sftp".equals(protocol)) {
             return deleteFromSFTP(account, filename, path);
         } else {
-            throw new RuntimeException("Desteklenmeyen protokol: " + account.getProtocol());
+            throw new RuntimeException("Desteklenmeyen protokol: " + protocol);
         }
     }
     
@@ -784,7 +875,8 @@ public class FTPService {
         
         try {
             ftpClient.connect(account.getHost(), account.getPort());
-            ftpClient.login(account.getUsername(), account.getPassword());
+            String decryptedPassword = decryptPassword(account.getPassword());
+            ftpClient.login(account.getUsername(), decryptedPassword);
             
             // Change to the target directory if specified
             if (path != null && !path.trim().isEmpty() && !path.equals("/")) {
@@ -831,7 +923,24 @@ public class FTPService {
             session = jsch.getSession(account.getUsername(), account.getHost(), account.getPort());
             String decryptedPassword = decryptPassword(account.getPassword());
             session.setPassword(decryptedPassword);
+            
+            // Eski OpenSSH sürümleri ile uyumlu ayarlar
             session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
+            session.setConfig("MaxAuthTries", "3");
+            session.setConfig("ServerAliveInterval", "60");
+            session.setConfig("ServerAliveCountMax", "3");
+            
+            // Eski OpenSSH sürümleri için ek ayarlar
+            session.setConfig("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            session.setConfig("cipher.s2c", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("cipher.c2s", "aes128-ctr,aes128-cbc,3des-cbc");
+            session.setConfig("mac.s2c", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("mac.c2s", "hmac-sha1,hmac-sha1-96,hmac-md5");
+            session.setConfig("compression.s2c", "none,zlib");
+            session.setConfig("compression.c2s", "none,zlib");
+            
+            session.setTimeout(30000); // 30 seconds
             session.connect();
             
             sftpChannel = (ChannelSftp) session.openChannel("sftp");

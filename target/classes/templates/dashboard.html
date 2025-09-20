@@ -11,10 +11,41 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         
-        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <!-- Error Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Bağlantı Hatası
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger mb-3">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>FTP/SFTP Bağlantı Hatası:</strong>
+                        </div>
+                        <div id="errorMessage" class="mb-3">
+                            <!-- Error message will be inserted here -->
+                        </div>
+                        <div class="bg-light p-3 rounded">
+                            <h6 class="mb-2">Olası Çözümler:</h6>
+                            <ul class="mb-0">
+                                <li>Sunucu adresini ve port numarasını kontrol edin</li>
+                                <li>Kullanıcı adı ve şifrenin doğru olduğundan emin olun</li>
+                                <li>İnternet bağlantınızı kontrol edin</li>
+                                <li>Sunucunun çalışır durumda olduğundan emin olun</li>
+                                <li>Güvenlik duvarı ayarlarını kontrol edin</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" class="btn btn-primary" onclick="retryConnection()">Tekrar Dene</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Welcome Section -->
@@ -131,6 +162,9 @@
                 </div>
             </div>
         </div>
+        
+        <script th:src="@{/js/dashboard.js}"></script>
     </div>
+   
 </body>
 </html>

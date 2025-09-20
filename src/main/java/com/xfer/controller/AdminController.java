@@ -325,4 +325,23 @@ public class AdminController {
         
         return "redirect:/admin";
     }
+    
+    @GetMapping("/debug-account/{id}")
+    public String debugAccount(@PathVariable Long id, Model model) {
+        try {
+            FTPAccount account = ftpService.getAccountById(id)
+                    .orElseThrow(() -> new RuntimeException("FTP hesabı bulunamadı"));
+            
+            model.addAttribute("account", account);
+            model.addAttribute("protocolRaw", account.getProtocol());
+            model.addAttribute("protocolLength", account.getProtocol() != null ? account.getProtocol().length() : 0);
+            model.addAttribute("protocolBytes", account.getProtocol() != null ? java.util.Arrays.toString(account.getProtocol().getBytes()) : "null");
+            
+            return "admin/debug_account";
+            
+        } catch (Exception e) {
+            model.addAttribute("error", "Debug hatası: " + e.getMessage());
+            return "admin/debug_account";
+        }
+    }
 }
